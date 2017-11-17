@@ -1,0 +1,5 @@
+idaw -c -A -S"E:\Works\IDA-python-Script/basicblock_extractor_split.py" "E:\Works\Data\samples\normal\calc.exe" > NUL
+
+idaw -c -A -S"E:\Works\IDA-python-Script/function_extractor.py" "E:\Works\Data\samples\normal\calc.exe"
+
+idaw -c -A -S"E:\Works\IDA-python-Script/basicblock_extractor_split.py" "E:\Works\Data\samples\normal\
