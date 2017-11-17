@@ -3,7 +3,7 @@ from idaapi import *
 from idc import *
 idc.Wait()
 ea = BeginEA()
-output_directory = 'c:/Data/test_output/'
+output_directory = 'E:/Works/IDA-python-Script/output/'
 filename = idc.AskFile(1, "*.*", "Save list of basic blocks")
 basename = idc.GetInputFile()
 filename = basename + ".asmf"

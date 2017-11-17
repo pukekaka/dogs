@@ -36,7 +36,7 @@ def cls_main(fp, func, p=True):
         #    if p: print "  %x - %x [%d]:" % (pred_block.startEA, pred_block.endEA, pred_block.id)
 
 def extract_bbs():
-	output_directory = 'C:/Data/test_output/'
+	output_directory = 'E:/Works/IDA-python-Script/output/'
 	filename = idc.AskFile(1, "*.*", "Save list of basic blocks")
         exit = False
         if not filename:
