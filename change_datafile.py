@@ -14,17 +14,20 @@ from collections import OrderedDict
 
 import os
 
-data_directory = 'C:/Data/test_output/'
+data_directory = 'E:/Works/Data/samples/malwares/APT/'
 
 asmf_extension = 'asmf'
+json_extension = 'json'
 bblist_extension = 'bblist'
 filelist = []
 asmf_filelist = []
 bblist_filelist = []
+json_filelit = []
 
 filecount = 0
 asmf_count = 0
 bblist_count = 0
+json_count = 0
 
 for root, dirs, files in os.walk(data_directory):
     for file in files:

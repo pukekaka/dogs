@@ -3,3 +3,7 @@ idaw -c -A -S"E:\Works\IDA-python-Script/basicblock_extractor_split.py" "E:\Work
 idaw -c -A -S"E:\Works\IDA-python-Script/function_extractor.py" "E:\Works\Data\samples\normal\calc.exe"
 
 idaw -c -A -S"E:\Works\IDA-python-Script/basicblock_extractor_split.py" "E:\Works\Data\samples\normal\
+
+idaw -c -A -S"E:\Project\PycharmProjects\dogs\idapython_script\basicblock_extractor_json.py" "E:\Works\Data\samples\malwares\APT\fad861a9be327893351b63be866ebe98" > NUL
+
+idaw -c -A -S"E:\Project\PycharmProjects\dogs\idapython_script\extractor_bblist.py" "E:\Works\Data\samples\malwares\APT\fad861a9be327893351b63be866ebe98" > NUL

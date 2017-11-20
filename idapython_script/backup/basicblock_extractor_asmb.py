@@ -3,10 +3,10 @@ from idaapi import *
 from idc import *
 idc.Wait()
 ea = BeginEA()
-output_directory = 'E:/Works/IDA-python-Script/output/'
+output_directory = 'E:/Works/Data/samples/output/'
 filename = idc.AskFile(1, "*.*", "Save list of basic blocks")
 basename = idc.GetInputFile()
-filename = basename + ".asmf"
+filename = basename + ".asmb"
 fp = open(output_directory + filename,'w')
 for funcea in Functions(SegStart(ea), SegEnd(ea)):
     functionName = GetFunctionName(funcea)
