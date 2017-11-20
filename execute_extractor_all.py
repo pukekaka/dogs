@@ -44,14 +44,14 @@ def main():
                 command = 'idaw64'
                 # print(command)
 
-            # cmd = command+' -c -A -S' + bbext_json + ' ' + file_path+' > NUL'
-            # print('     select command : ', cmd)
-            #
-            # result1 = os.system(cmd)
-            # if result1 == 0:
-            #     print('     mj_complete: %s' % file_path)
-            # else:
-            #     print('     mj_error: %s' % file_path)
+            cmd = command+' -c -A -S' + bbext_json + ' ' + file_path+' > NUL'
+            print('     select command : ', cmd)
+
+            result1 = os.system(cmd)
+            if result1 == 0:
+                print('     mj_complete: %s' % file_path)
+            else:
+                print('     mj_error: %s' % file_path)
 
             print('     => next step start')
 
