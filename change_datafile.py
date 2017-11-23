@@ -2,8 +2,10 @@
 import json
 import os
 
-data_directory = 'E:/Works/Data/samples/output/'
-output_directory = 'E:/Works/Data/samples/output_c/'
+# data_directory = 'E:/Works/Data/samples/output/'
+data_directory = '/home/pukekakaster/data/research/dataset/samples/output/'
+# output_directory = 'E:/Works/Data/samples/output_c/'
+output_directory = '/home/pukekakaster/data/research/dataset/samples/output_c/'
 output_filename = 'basicblock_by_line'
 output_filename = 'basicblock_by_space'
 
@@ -119,6 +121,8 @@ print('=> start end range list make end')
 
 print('=> start result')
 
+opndtype_list = ['Nop', 'Reg', 'Mem', 'Phrase', 'Displ', 'Imm', 'Far', 'Near', 'Nop2']
+
 def instlistbyline(insts, inst_range):
     word_list = []
 
@@ -134,12 +138,33 @@ def instlistbyline(insts, inst_range):
             opnd1 = inst['opnd1']
             opnd2 = inst['opnd2']
             opnd3 = inst['opnd3']
+            optype1 = inst['optype1']
+            optype2 = inst['optype2']
+            optype3 = inst['optype3']
+            for i, opndtype in enumerate(opndtype_list):
+                if i != 1 :
+                    if optype1 == i:
+                        opnd1 = opndtype
+                    if optype2 == i:
+                        opnd2 = opndtype
+                    if optype3 == i:
+                        opnd3 - opndtype
+
             word = opcode.replace(" ", "") + opnd1.replace(" ", "") + opnd2.replace(" ", "") + opnd3.replace(" ", "")
             # word = opcode.replace(" ", "") + opnd1.strip() + opnd2.strip() + opnd3.strip()
             # sentence.replace(" ", "")
             word = word.strip()
             word_list.append(word)
     return word_list
+
+# o_void  =      0  # No Operand
+# o_reg  =       1  # General Register (al,ax,es,ds...)    reg
+# o_mem  =       2  # Direct Memory Reference  (DATA)      addr
+# o_phrase  =    3  # Memory Ref [Base Reg + Index Reg]    phrase
+# o_displ  =     4  # Memory Reg [Base Reg + Index Reg + Displacement] phrase+addr
+# o_imm  =       5  # Immediate Value                      value
+# o_far  =       6  # Immediate Far Address  (CODE)        addr
+# o_near  =      7  # Immediate Near Address (CODE)        addr
 
 line_list =[]
 count = 1
