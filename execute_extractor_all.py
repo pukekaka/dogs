@@ -1,17 +1,12 @@
 #!/usr/bin/python
 
-'''
-
-execute python 2.7 !!!!!
-
-'''
 
 import os
 import pefile
 
 def main():
 
-    file_directory = 'E:/Works/Data/samples/malwares/APT/'
+    file_directory = 'E:/Works/Data/samples/normal/'
     script_directory = './idapython_script/'
     # bbext_asmb = script_directory + 'basicblock_extractor_asmb.py'
     bbext_json = script_directory + 'basicblock_extractor_json.py'
