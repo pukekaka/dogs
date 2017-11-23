@@ -5,13 +5,15 @@ import collections
 import numpy as np
 import pickle
 from tensorflow.python.framework import ops
+import zipfile
 ops.reset_default_graph()
 
 os.chdir(os.path.dirname(os.path.realpath(__file__)))
 
-data_folder_name = 'temp'
-if not os.path.exists(data_folder_name):
-    os.makedirs(data_folder_name)
+# data_folder_name = 'temp'
+data_folder_name = 'E:/Works/Data/samples/output_c'
+# if not os.path.exists(data_folder_name):
+#     os.makedirs(data_folder_name)
 
 '''
 Step0 : Variable Init
@@ -21,7 +23,8 @@ window_size = 3
 vocabulary_size = 7500
 stops = []
 
-valid_words = ['comedy', 'awesome', 'good', 'action', 'bad', 'happy']
+# valid_words = ['incesi', 'movecxesi', 'pusheax', 'movediedi', 'bad', 'happy']
+valid_words = ['incesi', 'movecxesi', 'pusheax', 'movediedi', 'testedxedx', 'call_memset']
 
 embedding_size = 200
 doc_embedding_size = 100
@@ -39,31 +42,31 @@ print_loss_every = 100
 '''
 Step1 : Loading Data
 '''
-def load_data():
-    save_folder_name = 'temp'
-    pos_file = os.path.join(save_folder_name, 'train-pos.txt')
-    neg_file = os.path.join(save_folder_name, 'train-neg.txt')
-
-    pos_data = []
-    with open(pos_file, 'r', encoding='utf-8') as f:
-        for line in f:
-            pos_data.append(line.encode('ascii', errors='ignore').decode())
-    f.close()
-    pos_data = [x.rstrip() for x in pos_data]
-
-    neg_data = []
-    with open(neg_file, 'r', encoding='utf-8') as f:
-        for line in f:
-            neg_data.append(line.encode('ascii', errors='ignore').decode())
-    f.close()
-    neg_data = [x.rstrip() for x in neg_data]
-
-    texts = pos_data + neg_data
-    target = [1] * len(pos_data) + [0] * len(neg_data)
-
-    return (texts, target)
-
-texts, target = load_data()
+# def load_data():
+#     save_folder_name = 'temp'
+#     pos_file = os.path.join(save_folder_name, 'train-pos.txt')
+#     neg_file = os.path.join(save_folder_name, 'train-neg.txt')
+#
+#     pos_data = []
+#     with open(pos_file, 'r', encoding='utf-8') as f:
+#         for line in f:
+#             pos_data.append(line.encode('ascii', errors='ignore').decode())
+#     f.close()
+#     pos_data = [x.rstrip() for x in pos_data]
+#
+#     neg_data = []
+#     with open(neg_file, 'r', encoding='utf-8') as f:
+#         for line in f:
+#             neg_data.append(line.encode('ascii', errors='ignore').decode())
+#     f.close()
+#     neg_data = [x.rstrip() for x in neg_data]
+#
+#     texts = pos_data + neg_data
+#     target = [1] * len(pos_data) + [0] * len(neg_data)
+#
+#     return (texts, target)
+#
+# texts, target = load_data()
 
 # print('texts size', len(texts))
 # print('target size', len(target))
@@ -72,25 +75,41 @@ texts, target = load_data()
 # print(texts[:5])
 # print(target[:5])
 
+def load_data():
+    save_folder_name = 'E:/Works/Data/samples/output_c'
+    bbl_file = os.path.join(save_folder_name, 'basicblock_by_line')
+
+    bbl_data = []
+    with open(bbl_file, 'r', encoding='utf-8') as f:
+        for line in f:
+            bbl_data.append(line.encode('ascii', errors='ignore').decode())
+    f.close()
+    bbl_data = [x.rstrip() for x in bbl_data]
+
+    texts = bbl_data
+
+    return texts
+
+texts = load_data()
 
 
 '''
 Step2 : Normalization 
 '''
-def normalize_text(texts, stops):
-    texts = [x.lower() for x in texts]
-    texts = [''.join(c for c in x if c not in string.punctuation) for x in texts]
-    texts = [''.join(c for c in x if c not in '0123456789') for x in texts]
-    texts = [' '.join([word for word in x.split() if word not in (stops)]) for x in texts]
-    texts = [' '.join(x.split()) for x in texts]
-
-    return (texts)
-
-texts = normalize_text(texts, stops)
-
-target = [target[ix] for ix, x in enumerate(texts) if len(x.split()) > window_size]
-texts = [x for x in texts if len(x.split()) > window_size]
-assert(len(target) == len(texts))
+# def normalize_text(texts, stops):
+#     texts = [x.lower() for x in texts]
+#     texts = [''.join(c for c in x if c not in string.punctuation) for x in texts]
+#     texts = [''.join(c for c in x if c not in '0123456789') for x in texts]
+#     texts = [' '.join([word for word in x.split() if word not in (stops)]) for x in texts]
+#     texts = [' '.join(x.split()) for x in texts]
+#
+#     return (texts)
+#
+# texts = normalize_text(texts, stops)
+#
+# target = [target[ix] for ix, x in enumerate(texts) if len(x.split()) > window_size]
+# texts = [x for x in texts if len(x.split()) > window_size]
+# assert(len(target) == len(texts))
 
 # print('texts size', len(texts))
 # print('target size', len(target))
@@ -148,7 +167,8 @@ def text_to_numbers(sentences, word_dict):
 
 text_data = text_to_numbers(texts, word_dictionary)
 
-# print(text_data[:5])
+print(text_data[:5])
+print(text_data[379])
 
 '''
 Step3-2 : valid example setting
@@ -291,7 +311,7 @@ for i in range(generations):
     # Save dictionary + embeddings
     if (i + 1) % save_embeddings_every == 0:
         # Save vocabulary dictionary
-        with open(os.path.join(data_folder_name, 'movie_vocab.pkl'), 'wb') as f:
+        with open(os.path.join(data_folder_name, 'instruction_line.pkl'), 'wb') as f:
             pickle.dump(word_dictionary, f)
 
         # Save embeddings

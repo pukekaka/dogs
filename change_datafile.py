@@ -5,6 +5,7 @@ import os
 data_directory = 'E:/Works/Data/samples/output/'
 output_directory = 'E:/Works/Data/samples/output_c/'
 output_filename = 'basicblock_by_line'
+output_filename = 'basicblock_by_space'
 
 bb_extension = 'json'
 bblist_extension = 'bblist'
@@ -161,9 +162,11 @@ output_file = open(output_directory + output_filename, 'w')
 resultlist = []
 for line in line_list:
     oneline = " ".join(line)
-    resultlist.append(oneline)
+    output_file.write(oneline+' ')
+    # resultlist.append(oneline)
 
-output_file.write("\n".join(resultlist))
+#output_file.write("\n".join(resultlist))
+# output_file.write(str(resultlist))
 output_file.close()
 
 print('=> file write end')

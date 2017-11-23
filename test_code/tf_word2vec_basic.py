@@ -38,7 +38,7 @@ import tensorflow as tf
 
 # filename = maybe_download('text8.zip', 31344016)
 
-filename = 'E:/Works/Data/samples/output_c/basicblock_by_line.zip'
+filename = 'E:/Works/Data/samples/output_c/basicblock_by_space.zip'
 
 # Read the data into a list of strings.
 def read_data(filename):
