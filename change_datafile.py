@@ -2,10 +2,10 @@
 import json
 import os
 
-# data_directory = 'E:/Works/Data/samples/output/'
-data_directory = '/home/pukekakaster/data/research/dataset/samples/output/'
-# output_directory = 'E:/Works/Data/samples/output_c/'
-output_directory = '/home/pukekakaster/data/research/dataset/samples/output_c/'
+data_directory = 'E:/Works/Data/samples/output/'
+# data_directory = '/home/pukekakaster/data/research/dataset/samples/output/'
+output_directory = 'E:/Works/Data/samples/output_c/'
+# output_directory = '/home/pukekakaster/data/research/dataset/samples/output_c/'
 output_filename = 'basicblock_by_line'
 output_filename = 'basicblock_by_space'
 
@@ -141,6 +141,8 @@ def instlistbyline(insts, inst_range):
             optype1 = inst['optype1']
             optype2 = inst['optype2']
             optype3 = inst['optype3']
+
+            #Level Low - Only instructions pattern
             for i, opndtype in enumerate(opndtype_list):
                 if i != 1 :
                     if optype1 == i:
@@ -148,11 +150,9 @@ def instlistbyline(insts, inst_range):
                     if optype2 == i:
                         opnd2 = opndtype
                     if optype3 == i:
-                        opnd3 - opndtype
-
+                        opnd3 = opndtype
             word = opcode.replace(" ", "") + opnd1.replace(" ", "") + opnd2.replace(" ", "") + opnd3.replace(" ", "")
             # word = opcode.replace(" ", "") + opnd1.strip() + opnd2.strip() + opnd3.strip()
-            # sentence.replace(" ", "")
             word = word.strip()
             word_list.append(word)
     return word_list
