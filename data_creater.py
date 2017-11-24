@@ -2,12 +2,15 @@
 import json
 import os
 
-data_directory = 'E:/Works/Data/samples/output/'
-# data_directory = '/home/pukekakaster/data/research/dataset/samples/output/'
-output_directory = 'E:/Works/Data/samples/output_c/'
-# output_directory = '/home/pukekakaster/data/research/dataset/samples/output_c/'
+
+current_directory = os.path.dirname(os.path.abspath(__file__))
+data_directory = 'data'
+output_directory = 'output'
 output_filename = 'basicblock_by_line'
-output_filename = 'basicblock_by_space'
+# output_filename = 'basicblock_by_space'
+files_path = os.path.join(current_directory, data_directory)
+output_path = os.path.join(current_directory, output_directory)
+output_file = os.path.join(current_directory, output_directory, output_filename)
 
 bb_extension = 'json'
 bblist_extension = 'bblist'
@@ -16,16 +19,16 @@ bblist_filenamelist = []
 
 print('=> filename read start')
 
-for root, dirs, files in os.walk(data_directory):
+for root, dirs, files in os.walk(files_path):
     for file in files:
 
         filename_split = file.split('.')
         extension_loc = len(filename_split) - 1
         if bb_extension == filename_split[extension_loc]:
-            bb_filenamelist.append(root+file)
+            bb_filenamelist.append(root+'/'+file)
 
         elif bblist_extension == filename_split[extension_loc]:
-            bblist_filenamelist.append(root+file)
+            bblist_filenamelist.append(root+'/'+file)
 
 print('=> filename read end')
 
@@ -138,19 +141,19 @@ def instlistbyline(insts, inst_range):
             opnd1 = inst['opnd1']
             opnd2 = inst['opnd2']
             opnd3 = inst['opnd3']
-            optype1 = inst['optype1']
-            optype2 = inst['optype2']
-            optype3 = inst['optype3']
+            # optype1 = inst['optype1']
+            # optype2 = inst['optype2']
+            # optype3 = inst['optype3']
 
             #Level Low - Only instructions pattern
-            for i, opndtype in enumerate(opndtype_list):
-                if i != 1 :
-                    if optype1 == i:
-                        opnd1 = opndtype
-                    if optype2 == i:
-                        opnd2 = opndtype
-                    if optype3 == i:
-                        opnd3 = opndtype
+            # for i, opndtype in enumerate(opndtype_list):
+            #     if i != 1 :
+            #         if optype1 == i:
+            #             opnd1 = opndtype
+            #         if optype2 == i:
+            #             opnd2 = opndtype
+            #         if optype3 == i:
+            #             opnd3 = opndtype
             word = opcode.replace(" ", "") + opnd1.replace(" ", "") + opnd2.replace(" ", "") + opnd3.replace(" ", "")
             # word = opcode.replace(" ", "") + opnd1.strip() + opnd2.strip() + opnd3.strip()
             word = word.strip()
@@ -183,15 +186,15 @@ for bb_range_key in bb_range_list.keys():
 print('=> end result')
 print('=> file write start')
 
-output_file = open(output_directory + output_filename, 'w')
+output_file = open(output_file, 'w')
 resultlist = []
 for line in line_list:
     oneline = " ".join(line)
-    output_file.write(oneline+' ')
-    # resultlist.append(oneline)
+    # output_file.write(oneline+' ')
+    resultlist.append(oneline)
 
-#output_file.write("\n".join(resultlist))
-# output_file.write(str(resultlist))
+output_file.write("\n".join(resultlist))
+output_file.write(str(resultlist))
 output_file.close()
 
 print('=> file write end')

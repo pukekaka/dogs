@@ -29,6 +29,10 @@ MANIFEST
 
 data/
 .data/
+output/
+.output/
+model/
+.model/
 
 # PyInstaller
 #  Usually these files are written by a python script from a template
