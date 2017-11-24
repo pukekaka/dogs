@@ -6,7 +6,7 @@ import pefile
 
 def main():
 
-    file_directory = 'E:/Works/Data/samples/normal/'
+    file_directory = 'E:/Works/Data/samples/malwares/Random/'
     script_directory = './idapython_script/'
     # bbext_asmb = script_directory + 'basicblock_extractor_asmb.py'
     bbext_json = script_directory + 'basicblock_extractor_json.py'
