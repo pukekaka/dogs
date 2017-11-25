@@ -1,7 +1,8 @@
 #-*-coding:utf-8-*-
 import json
 import os
-
+import inflect
+import re
 
 current_directory = os.path.dirname(os.path.abspath(__file__))
 data_directory = 'data'
@@ -9,7 +10,7 @@ output_directory = 'output'
 output_filename = 'basicblock_by_line'
 # output_filename = 'basicblock_by_space'
 files_path = os.path.join(current_directory, data_directory)
-output_path = os.path.join(current_directory, output_directory)
+# output_path = os.path.join(current_directory, output_directory)
 output_file = os.path.join(current_directory, output_directory, output_filename)
 
 bb_extension = 'json'
@@ -126,6 +127,31 @@ print('=> start result')
 
 opndtype_list = ['Nop', 'Reg', 'Mem', 'Phrase', 'Displ', 'Imm', 'Far', 'Near', 'Nop2']
 
+p = inflect.engine()
+
+def changeString(string):
+    stringlist = list(str(string))
+    changestringlist = []
+    for item in stringlist:
+        if item.isdigit():
+            word = p.number_to_words(item, group=1)
+            changestringlist.append(word)
+        else:
+            changestringlist.append(item)
+    result = "".join(changestringlist)
+    remove_specific_word_result = result.translate({ord(c): "" for c in "!@#$%^&*()[]{};:,./<>?\|`~-=_+"})
+    # print(result)
+    return remove_specific_word_result
+
+def changeValue(string):
+    if 'loc' in string:
+        return 'locfunc'
+    elif 'sub' in string:
+        return 'subfunc'
+    else:
+        return string
+
+
 def instlistbyline(insts, inst_range):
     word_list = []
 
@@ -138,24 +164,32 @@ def instlistbyline(insts, inst_range):
         line = inst['line']
         if line >= startiline and line < endiline:
             opcode = inst['opcode']
-            opnd1 = inst['opnd1']
-            opnd2 = inst['opnd2']
-            opnd3 = inst['opnd3']
-            # optype1 = inst['optype1']
-            # optype2 = inst['optype2']
-            # optype3 = inst['optype3']
+            # opnd1 = inst['opnd1']
+            # opnd2 = inst['opnd2']
+            # opnd3 = inst['opnd3']
+            opnd1 = changeString(inst['opnd1'])
+            opnd2 = changeString(inst['opnd2'])
+            opnd3 = changeString(inst['opnd3'])
+            optype1 = inst['optype1']
+            optype2 = inst['optype2']
+            optype3 = inst['optype3']
 
             #Level Low - Only instructions pattern
-            # for i, opndtype in enumerate(opndtype_list):
-            #     if i != 1 :
-            #         if optype1 == i:
-            #             opnd1 = opndtype
-            #         if optype2 == i:
-            #             opnd2 = opndtype
-            #         if optype3 == i:
-            #             opnd3 = opndtype
+            for i, opndtype in enumerate(opndtype_list):
+                if i == 7 :
+                    if optype1 == i:
+                        # opnd1 = opndtype
+                        opnd1 = changeValue(opnd1)
+                    if optype2 == i:
+                        # opnd2 = opndtype
+                        opnd2 = changeValue(opnd2)
+                    if optype3 == i:
+                        # opnd3 = opndtype
+                        opnd3 = changeValue(opnd3)
+
             word = opcode.replace(" ", "") + opnd1.replace(" ", "") + opnd2.replace(" ", "") + opnd3.replace(" ", "")
             # word = opcode.replace(" ", "") + opnd1.strip() + opnd2.strip() + opnd3.strip()
+            # print(word)
             word = word.strip()
             word_list.append(word)
     return word_list
@@ -194,7 +228,7 @@ for line in line_list:
     resultlist.append(oneline)
 
 output_file.write("\n".join(resultlist))
-output_file.write(str(resultlist))
+# output_file.write(str(resultlist))
 output_file.close()
 
 print('=> file write end')

@@ -2,6 +2,7 @@
 import json
 import os
 import inflect
+import re
 
 
 current_directory = os.path.dirname(os.path.abspath(__file__))
@@ -126,7 +127,6 @@ print('=> start end range list make end')
 print('=> start result')
 
 opndtype_list = ['Nop', 'Reg', 'Mem', 'Phrase', 'Displ', 'Imm', 'Far', 'Near', 'Nop2']
-number_list = ['zero','one', 'two', 'three', 'four', 'five', 'six', 'seven','eight', 'nine']
 
 p = inflect.engine()
 
@@ -143,6 +143,14 @@ def changeString(string):
     remove_specific_word_result = result.translate({ord(c): "" for c in "!@#$%^&*()[]{};:,./<>?\|`~-=_+"})
     # print(result)
     return remove_specific_word_result
+
+def changeValue(string):
+    if 'loc' in string:
+        return 'locfunc'
+    elif 'sub' in string:
+        return 'subfunc'
+    else:
+        return string
 
 
 def instlistbyline(insts, inst_range):
@@ -168,14 +176,17 @@ def instlistbyline(insts, inst_range):
             optype3 = inst['optype3']
 
             #Level Low - Only instructions pattern
-            # for i, opndtype in enumerate(opndtype_list):
-            #     if i != 1 :
-            #         if optype1 == i:
-            #             opnd1 = opndtype
-            #         if optype2 == i:
-            #             opnd2 = opndtype
-            #         if optype3 == i:
-            #             opnd3 = opndtype
+            for i, opndtype in enumerate(opndtype_list):
+                if i == 7 :
+                    if optype1 == i:
+                        # opnd1 = opndtype
+                        opnd1 = changeValue(opnd1)
+                    if optype2 == i:
+                        # opnd2 = opndtype
+                        opnd2 = changeValue(opnd2)
+                    if optype3 == i:
+                        # opnd3 = opndtype
+                        opnd3 = changeValue(opnd3)
 
             word = opcode.replace(" ", "") + opnd1.replace(" ", "") + opnd2.replace(" ", "") + opnd3.replace(" ", "")
             # word = opcode.replace(" ", "") + opnd1.strip() + opnd2.strip() + opnd3.strip()

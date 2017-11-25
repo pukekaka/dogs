@@ -13,7 +13,7 @@ logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=lo
 # start = time.time()
 
 current_directory = os.path.dirname(os.path.abspath(__file__))
-data_directory = 'data'
+data_directory = 'output'
 filename = 'basicblock_by_line'
 model_directory = 'model'
 modelname = filename+'_inst2vec.model'
@@ -31,6 +31,8 @@ while True:
     insts_corpus.append(line.strip())
 
 fr.close()
+
+# print(insts_corpus[:5])
 
 insts_list = [[insts for insts in insts_line.lower().split()] for insts_line in insts_corpus]
 model = word2vec.Word2Vec(insts_list, min_count=1, size=200, workers=4)
