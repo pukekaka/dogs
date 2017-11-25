@@ -1,61 +1,61 @@
-push0 pushoffsetCaption pushoffsetText push0 callMessageBoxA
-push0 push80h push3 push0 push0 push80000000h pushoffsetFileName callCreateFileA
-movds:hFileeax cmpeax0FFFFFFFFh jzloc_401075
-push0 pushds:hFile callGetFileSize
-cmpeax12h jnzloc_401060
-push0 pushoffsetaWellDone pushoffsetaYepKeyfileFoun push0 callMessageBoxA
-jmploc_401088
-push0 pushoffsetaError pushoffsetaTheFoundFileIs push0 callMessageBoxA
-jmploc_401088
-push0 pushoffsetaError_0 pushoffsetaHmmmmmICanTFin push0 callMessageBoxA
+pushzero pushoffsetCaption pushoffsetText pushzero callMessageBoxA
+pushzero pusheightzeroh pushthree pushzero pushzero pusheightzerozerozerozerozerozerozeroh pushoffsetFileName callCreateFileA
+movdshFileeax cmpeaxzeroFFFFFFFFh jzlocfourzeroonezerosevenfive
+pushzero pushdshFile callGetFileSize
+cmpeaxonetwoh jnzlocfourzeroonezerosixzero
+pushzero pushoffsetaWellDone pushoffsetaYepKeyfileFoun pushzero callMessageBoxA
+jmplocfourzeroonezeroeighteight
+pushzero pushoffsetaError pushoffsetaTheFoundFileIs pushzero callMessageBoxA
+jmplocfourzeroonezeroeighteight
+pushzero pushoffsetaErrorzero pushoffsetaHmmmmmICanTFin pushzero callMessageBoxA
 callExitProcess
-jmpds:__imp_CreateFileA
-jmpds:__imp_GetFileSize
-jmpds:__imp_ExitProcess
-push0 pushoffsetCaption pushoffsetText push0 callMessageBoxA
+jmpdsimpCreateFileA
+jmpdsimpGetFileSize
+jmpdsimpExitProcess
+pushzero callGetModuleHandleA
+movdshInstanceeax pushzero pushoffsetDialogFunc pushzero pushone pushdshInstance callDialogBoxParamA
+pushzero callExitProcess
+enterzerozero cmpebpargfouroneoneoneh jnzlocfourzeroonezerothreeD
+callsubfourzeroonezerofivesix
+jmplocfourzeroonezerofivezero
+cmpebpargfourtwo jnzlocfourzeroonezerofourA
+callsubfourzerooneonetwoD
+jmplocfourzeroonezerofivezero
+xoreaxeax leave retnonezeroh
+xoreaxeax leave retnonezeroh
+cmpdwordptrebponezerohsixfiveh jzlocfourzeroonezerosixC
+cmpdwordptrebponezerohtwo jzsubfourzerooneonetwoD
+xoreaxeax leave retnonezeroh
+pushtwofiveh pushoffsetString pushsixeighth pushdwordptrebpeight callGetDlgItemTextA
+pushzero pushzero pushoffsetFileSystemFlags pushoffsetMaximumComponentLength pushoffsetVolumeSerialNumber pushthreetwoh pushoffsetVolumeNameBuffer pushzero callGetVolumeInformationA
+pushoffsetStringtwo pushoffsetVolumeNameBuffer calllstrcatA
+movdltwo
+adddsVolumeNameBufferone adddsVolumeNameBufferoneone adddsVolumeNameBuffertwoone adddsVolumeNameBufferthreeone decdl jnzlocfourzeroonezeroAF
+pushoffsetaLtwocfiveseveneightone pushoffsetbytefourzerotwozerozerozero calllstrcatA
+pushoffsetVolumeNameBuffer pushoffsetbytefourzerotwozerozerozero calllstrcatA
+pushoffsetString pushoffsetbytefourzerotwozerozerozero calllstrcmpiA
+cmpeaxzero jzlocfourzerooneoneoneseven
+pushzero pushoffsetCaption pushoffsetText pushdwordptrebpeight callMessageBoxA
+jmpsubfourzerooneonetwoD
+pushzero pushoffsetaWellDone pushoffsetaYepYouEnteredA pushdwordptrebpeight callMessageBoxA
+jmptwo
+pushzero pushdwordptrebpeight callEndDialog
+leave retnonezeroh
+jmpdsimpGetModuleHandleA
+jmpdsimplstrcatA
+jmpdsimpExitProcess
+jmpdsimplstrcmpiA
+jmpdsimpGetVolumeInformationA
+jmpdsimpEndDialog
+jmpdsimpDialogBoxParamA
+jmpdsimpMessageBoxA
+pushzero pushoffsetCaption pushoffsetText pushzero callMessageBoxA
 pushoffsetRootPathName callGetDriveTypeA
-incesi deceax jmp$+2
-incesi incesi deceax cmpeaxesi jzloc_40103D
-push0 pushoffsetaError pushoffsetaNah___ThisIsNo push0 callMessageBoxA
-jmploc_401050
-push0 pushoffsetaYeah pushoffsetaOkIReallyThink push0 callMessageBoxA
+incesi deceax jmptwo
+incesi incesi deceax cmpeaxesi jzlocfourzeroonezerothreeD
+pushzero pushoffsetaError pushoffsetaNahThisIsNo pushzero callMessageBoxA
+jmplocfourzeroonezerofivezero
+pushzero pushoffsetaYeah pushoffsetaOkIReallyThink pushzero callMessageBoxA
 callExitProcess
-jmpds:__imp_GetDriveTypeA
-jmpds:__imp_ExitProcess
-push0 callGetModuleHandleA
-movds:hInstanceeax push0 pushoffsetDialogFunc push0 push1 pushds:hInstance callDialogBoxParamA
-push0 callExitProcess
-enter00 cmp[ebp+arg_4]111h jnzloc_40103D
-callsub_401056
-jmploc_401050
-cmp[ebp+arg_4]2 jnzloc_40104A
-callsub_40112D
-jmploc_401050
-xoreaxeax leave retn10h
-xoreaxeax leave retn10h
-cmpdwordptr[ebp+10h]65h jzloc_40106C
-cmpdwordptr[ebp+10h]2 jzsub_40112D
-xoreaxeax leave retn10h
-push25h pushoffsetString push68h pushdwordptr[ebp+8] callGetDlgItemTextA
-push0 push0 pushoffsetFileSystemFlags pushoffsetMaximumComponentLength pushoffsetVolumeSerialNumber push32h pushoffsetVolumeNameBuffer push0 callGetVolumeInformationA
-pushoffsetString2 pushoffsetVolumeNameBuffer calllstrcatA
-movdl2
-addds:VolumeNameBuffer1 addds:VolumeNameBuffer+11 addds:VolumeNameBuffer+21 addds:VolumeNameBuffer+31 decdl jnzloc_4010AF
-pushoffsetaL2c5781 pushoffsetbyte_402000 calllstrcatA
-pushoffsetVolumeNameBuffer pushoffsetbyte_402000 calllstrcatA
-pushoffsetString pushoffsetbyte_402000 calllstrcmpiA
-cmpeax0 jzloc_401117
-push0 pushoffsetCaption pushoffsetText pushdwordptr[ebp+8] callMessageBoxA
-jmpsub_40112D
-push0 pushoffsetaWellDone pushoffsetaYepYouEnteredA pushdwordptr[ebp+8] callMessageBoxA
-jmp$+2
-push0 pushdwordptr[ebp+8] callEndDialog
-leave retn10h
-jmpds:__imp_GetModuleHandleA
-jmpds:__imp_lstrcatA
-jmpds:__imp_ExitProcess
-jmpds:__imp_lstrcmpiA
-jmpds:__imp_GetVolumeInformationA
-jmpds:__imp_EndDialog
-jmpds:__imp_DialogBoxParamA
-jmpds:__imp_MessageBoxA['push0 pushoffsetCaption pushoffsetText push0 callMessageBoxA', 'push0 push80h push3 push0 push0 push80000000h pushoffsetFileName callCreateFileA', 'movds:hFileeax cmpeax0FFFFFFFFh jzloc_401075', 'push0 pushds:hFile callGetFileSize', 'cmpeax12h jnzloc_401060', 'push0 pushoffsetaWellDone pushoffsetaYepKeyfileFoun push0 callMessageBoxA', 'jmploc_401088', 'push0 pushoffsetaError pushoffsetaTheFoundFileIs push0 callMessageBoxA', 'jmploc_401088', 'push0 pushoffsetaError_0 pushoffsetaHmmmmmICanTFin push0 callMessageBoxA', 'callExitProcess', 'jmpds:__imp_CreateFileA', 'jmpds:__imp_GetFileSize', 'jmpds:__imp_ExitProcess', 'push0 pushoffsetCaption pushoffsetText push0 callMessageBoxA', 'pushoffsetRootPathName callGetDriveTypeA', 'incesi deceax jmp$+2', 'incesi incesi deceax cmpeaxesi jzloc_40103D', 'push0 pushoffsetaError pushoffsetaNah___ThisIsNo push0 callMessageBoxA', 'jmploc_401050', 'push0 pushoffsetaYeah pushoffsetaOkIReallyThink push0 callMessageBoxA', 'callExitProcess', 'jmpds:__imp_GetDriveTypeA', 'jmpds:__imp_ExitProcess', 'push0 callGetModuleHandleA', 'movds:hInstanceeax push0 pushoffsetDialogFunc push0 push1 pushds:hInstance callDialogBoxParamA', 'push0 callExitProcess', 'enter00 cmp[ebp+arg_4]111h jnzloc_40103D', 'callsub_401056', 'jmploc_401050', 'cmp[ebp+arg_4]2 jnzloc_40104A', 'callsub_40112D', 'jmploc_401050', 'xoreaxeax leave retn10h', 'xoreaxeax leave retn10h', 'cmpdwordptr[ebp+10h]65h jzloc_40106C', 'cmpdwordptr[ebp+10h]2 jzsub_40112D', 'xoreaxeax leave retn10h', 'push25h pushoffsetString push68h pushdwordptr[ebp+8] callGetDlgItemTextA', 'push0 push0 pushoffsetFileSystemFlags pushoffsetMaximumComponentLength pushoffsetVolumeSerialNumber push32h pushoffsetVolumeNameBuffer push0 callGetVolumeInformationA', 'pushoffsetString2 pushoffsetVolumeNameBuffer calllstrcatA', 'movdl2', 'addds:VolumeNameBuffer1 addds:VolumeNameBuffer+11 addds:VolumeNameBuffer+21 addds:VolumeNameBuffer+31 decdl jnzloc_4010AF', 'pushoffsetaL2c5781 pushoffsetbyte_402000 calllstrcatA', 'pushoffsetVolumeNameBuffer pushoffsetbyte_402000 calllstrcatA', 'pushoffsetString pushoffsetbyte_402000 calllstrcmpiA', 'cmpeax0 jzloc_401117', 'push0 pushoffsetCaption pushoffsetText pushdwordptr[ebp+8] callMessageBoxA', 'jmpsub_40112D', 'push0 pushoffsetaWellDone pushoffsetaYepYouEnteredA pushdwordptr[ebp+8] callMessageBoxA', 'jmp$+2', 'push0 pushdwordptr[ebp+8] callEndDialog', 'leave retn10h', 'jmpds:__imp_GetModuleHandleA', 'jmpds:__imp_lstrcatA', 'jmpds:__imp_ExitProcess', 'jmpds:__imp_lstrcmpiA', 'jmpds:__imp_GetVolumeInformationA', 'jmpds:__imp_EndDialog', 'jmpds:__imp_DialogBoxParamA', 'jmpds:__imp_MessageBoxA']
+jmpdsimpGetDriveTypeA
+jmpdsimpExitProcess

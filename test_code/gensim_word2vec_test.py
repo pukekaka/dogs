@@ -16,7 +16,7 @@ current_directory = os.path.dirname(os.path.abspath(__file__))
 data_directory = 'output'
 filename = 'basicblock_by_line'
 model_directory = 'model'
-modelname = filename+'.model'
+modelname = filename+'-word2vec.model'
 file_path = os.path.join(current_directory, data_directory , filename)
 model_path = os.path.join(current_directory, model_directory, modelname)
 
