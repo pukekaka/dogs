@@ -33,6 +33,8 @@ output/
 .output/
 model/
 .model/
+tensorboard
+.tensorboard/
 
 # PyInstaller
 #  Usually these files are written by a python script from a template
