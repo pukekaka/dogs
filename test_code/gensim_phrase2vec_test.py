@@ -38,7 +38,7 @@ def read_corpus(fname, tokens_only=False):
 
 train_corpus = list(read_corpus(file_path))
 
-# print(train_corpus)
+print(train_corpus)
 
 model = gensim.models.doc2vec.Doc2Vec(size=50, min_count=2, iter=55)
 model.build_vocab(train_corpus)
@@ -46,28 +46,28 @@ model.build_vocab(train_corpus)
 # %time model.train(train_corpus, total_examples=model.corpus_count, epochs=model.iter)
 # print(model.infer_vector(['pushzero']))
 
-ranks = []
-second_ranks = []
-for doc_id in range(len(train_corpus)):
-    inferred_vector = model.infer_vector(train_corpus[doc_id].words)
-    sims = model.docvecs.most_similar([inferred_vector], topn=len(model.docvecs))
-    rank = [docid for docid, sim in sims].index(doc_id)
-    ranks.append(rank)
-
-    second_ranks.append(sims[1])
-
-collections.Counter(ranks)
-print('Document ({}): «{}»\n'.format(doc_id, ' '.join(train_corpus[doc_id].words)))
-print(u'SIMILAR/DISSIMILAR DOCS PER MODEL %s:\n' % model)
-for label, index in [('MOST', 0), ('MEDIAN', len(sims)//2), ('LEAST', len(sims) - 1)]:
-    print(u'%s %s: «%s»\n' % (label, sims[index], ' '.join(train_corpus[sims[index][0]].words)))
-
-doc_id = random.randint(0, len(train_corpus))
-
-# Compare and print the most/median/least similar documents from the train corpus
-print('Train Document ({}): «{}»\n'.format(doc_id, ' '.join(train_corpus[doc_id].words)))
-sim_id = second_ranks[doc_id]
-print('Similar Document {}: «{}»\n'.format(sim_id, ' '.join(train_corpus[sim_id[0]].words)))
+# ranks = []
+# second_ranks = []
+# for doc_id in range(len(train_corpus)):
+#     inferred_vector = model.infer_vector(train_corpus[doc_id].words)
+#     sims = model.docvecs.most_similar([inferred_vector], topn=len(model.docvecs))
+#     rank = [docid for docid, sim in sims].index(doc_id)
+#     ranks.append(rank)
+#
+#     second_ranks.append(sims[1])
+#
+# collections.Counter(ranks)
+# print('Document ({}): «{}»\n'.format(doc_id, ' '.join(train_corpus[doc_id].words)))
+# print(u'SIMILAR/DISSIMILAR DOCS PER MODEL %s:\n' % model)
+# for label, index in [('MOST', 0), ('MEDIAN', len(sims)//2), ('LEAST', len(sims) - 1)]:
+#     print(u'%s %s: «%s»\n' % (label, sims[index], ' '.join(train_corpus[sims[index][0]].words)))
+#
+# doc_id = random.randint(0, len(train_corpus))
+#
+# # Compare and print the most/median/least similar documents from the train corpus
+# print('Train Document ({}): «{}»\n'.format(doc_id, ' '.join(train_corpus[doc_id].words)))
+# sim_id = second_ranks[doc_id]
+# print('Similar Document {}: «{}»\n'.format(sim_id, ' '.join(train_corpus[sim_id[0]].words)))
 
 #
 # insts_list = [[insts for insts in insts_line.lower().split()] for insts_line in insts_corpus]

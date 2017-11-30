@@ -30,7 +30,7 @@ file_path = os.path.join(current_directory, data_directory, data_directory2)
 model_path = os.path.join(current_directory, model_directory, modelname)
 
 docLabels = []
-docLabels = [f for f in listdir(file_path) if f.endswith('.exe_bb_by_line')]
+docLabels = [f for f in listdir(file_path)]
 
 def read_corpus(fname):
     for doc in docLabels:
