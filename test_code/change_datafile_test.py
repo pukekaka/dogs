@@ -8,7 +8,8 @@ import re
 current_directory = os.path.dirname(os.path.abspath(__file__))
 data_directory = 'data'
 output_directory = 'output'
-output_filename = 'basicblock_by_line'
+output_filename = 'basicblock_by_doc'
+# output_filename = 'basicblock_by_line'
 # output_filename = 'basicblock_by_space'
 files_path = os.path.join(current_directory, data_directory)
 # output_path = os.path.join(current_directory, output_directory)
@@ -216,7 +217,6 @@ for bb_range_key in bb_range_list.keys():
                     print('error', bb_data['filename'])
     print('result', count, 'complete', bb_range_key)
     count += 1
-
 
 print('=> end result')
 print('=> file write start')

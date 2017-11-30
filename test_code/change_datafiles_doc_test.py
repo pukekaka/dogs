@@ -8,9 +8,7 @@ import re
 current_directory = os.path.dirname(os.path.abspath(__file__))
 data_directory = 'data'
 output_directory = 'output'
-output_directory2 = 'each'
-suffix_filename = '_bb_by_line'
-# output_filename = 'basicblock_by_space'
+output_filename = 'basicblock_by_doc'
 files_path = os.path.join(current_directory, data_directory)
 # output_path = os.path.join(current_directory, output_directory)
 # output_file = os.path.join(current_directory, output_directory, output_filename)
@@ -227,14 +225,16 @@ print('=> file write start')
 
 # output_file = os.path.join(current_directory, output_directory, output_filename)
 
+output_file = os.path.join(current_directory, output_directory, output_filename)
+of = open(output_file, 'w')
+
 for result_dict_key in result_dict.keys():
-    output_file = os.path.join(current_directory, output_directory, output_directory2, result_dict_key+suffix_filename)
-    of = open(output_file, 'w')
     resultlist = []
     for line in result_dict[result_dict_key]:
         oneline = " ".join(line)
         resultlist.append(oneline)
-    of.write(" ".join(resultlist))
-    of.close()
+    of.write("\n".join(resultlist))
+
+of.close()
 
 print('=> file write end')
