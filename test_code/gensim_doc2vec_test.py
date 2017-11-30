@@ -30,7 +30,97 @@ file_path = os.path.join(current_directory, data_directory, data_directory2)
 model_path = os.path.join(current_directory, model_directory, modelname)
 
 docLabels = []
-docLabels = [f for f in listdir(file_path) if f.endswith('.exe_bb_by_line')]
+docLabels = [f for f in listdir(file_path)]
+
+
+
+import gensim
+from gensim.models.doc2vec import TaggedDocument
+from collections import namedtuple
+
+SentimentDocument = namedtuple('SentimentDocument', 'words tags split sentiment')
+
+alldocs = []  # Will hold all docs in original order
+with open('aclImdb/alldata-id.txt', encoding='utf-8') as alldata:
+    for line_no, line in enumerate(alldata):
+        tokens = gensim.utils.to_unicode(line).split()
+        words = tokens[1:]
+        tags = [line_no] # 'tags = [tokens[0]]' would also work at extra memory cost
+        split = ['train', 'test', 'extra', 'extra'][line_no//25000]  # 25k train, 25k test, 25k extra
+        sentiment = [1.0, 0.0, 1.0, 0.0, None, None, None, None][line_no//12500] # [12.5K pos, 12.5K neg]*2 then unknown
+        alldocs.append(SentimentDocument(words, tags, split, sentiment))
+
+train_docs = [doc for doc in alldocs if doc.split == 'train']
+test_docs = [doc for doc in alldocs if doc.split == 'test']
+doc_list = alldocs[:]  # For reshuffling per pass
+
+print('%d docs: %d train-sentiment, %d test-sentiment' % (len(doc_list), len(train_docs), len(test_docs)))
+
+
+
+cores = multiprocessing.cpu_count()
+assert gensim.models.doc2vec.FAST_VERSION > -1, "This will be painfully slow otherwise"
+
+simple_models = [
+    # PV-DM w/ concatenation - window=5 (both sides) approximates paper's 10-word total window size
+    Doc2Vec(dm=1, dm_concat=1, size=100, window=5, negative=5, hs=0, min_count=2, workers=cores),
+    # PV-DBOW
+    Doc2Vec(dm=0, size=100, negative=5, hs=0, min_count=2, workers=cores),
+    # PV-DM w/ average
+    Doc2Vec(dm=1, dm_mean=1, size=100, window=10, negative=5, hs=0, min_count=2, workers=cores),
+]
+
+# Speed up setup by sharing results of the 1st model's vocabulary scan
+simple_models[0].build_vocab(alldocs)  # PV-DM w/ concat requires one special NULL word so it serves as template
+print(simple_models[0])
+for model in simple_models[1:]:
+    model.reset_from(simple_models[0])
+    print(model)
+
+models_by_name = OrderedDict((str(model), model) for model in simple_models)
+
+
+
+
+
+data = []
+for doc in docLabels:
+    buf = ''
+    f = open(file_path + '/' + doc, 'r')
+    for line in f.readlines():
+        buf = buf + line.strip() + ' '
+    data.append(buf)
+
+print(len(data))
+
+class DocIterator(object):
+    def __init__(self, doc_list, labels_list):
+        self.labels_list = labels_list
+        self.doc_list = doc_list
+
+    def __iter__(self):
+        for idx, doc in enumerate(self.doc_list):
+            yield TaggedDocument(words=doc.split(), labels=[self.labels_list[idx]])
+
+
+iterator = DocIterator(data, docLabels)
+
+model = doc2vec.Doc2Vec(size=300, window=10, min_count=1, workers=11,alpha=0.025, min_alpha=0.025) # use fixed learning rate
+model.build_vocab(iterator)
+# for epoch in range(10):
+#     model.train(iterator)
+#     model.alpha -= 0.002 # decrease the learning rate
+#     model.min_alpha = model.alpha # fix the learning rate, no deca
+#     model.train(iterator)
+
+
+# train_corpus = "toy_data/train_docs.txt"
+# docs = g.doc2vec.TaggedLineDocument(train_corpus)
+# model = g.Doc2Vec(docs, size=vector_size, window=window_size, min_count=min_count, sample=sampling_threshold, workers=worker_count, hs=0, dm=dm, negative=negative_size, dbow_words=1, dm_concat=1, pretrained_emb=pretrained_emb, iter=train_epoch)
+#
+# #save model
+# model.save(saved_path)
+
 
 # def read_corpus(fname):
 #     for doc in docLabels:
@@ -94,7 +184,7 @@ docLabels = [f for f in listdir(file_path) if f.endswith('.exe_bb_by_line')]
 #             yield TaggedDocument(words=doc.split(), labels=[self.labels_list[idx]])
 #
 #
-# iterator = DocIterator(data, docLabels)
+#
 #
 # model = doc2vec.Doc2Vec(size=100, window=10, min_count=1, workers=4, alpha=0.025, min_alpha=0.025)
 # # model = gensim.models.doc2vec.Doc2Vec(size=50, min_count=2, iter=55)
