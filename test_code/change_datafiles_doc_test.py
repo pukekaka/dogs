@@ -233,7 +233,7 @@ for result_dict_key in result_dict.keys():
     for line in result_dict[result_dict_key]:
         oneline = " ".join(line)
         resultlist.append(oneline)
-    of.write("\n".join(resultlist))
+    of.write(result_dict_key + ' ' + " ".join(resultlist) + '\n')
 
 of.close()
 
