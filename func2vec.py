@@ -17,8 +17,6 @@ from pprint import pprint
 
 logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
 
-start = time.time()
-
 current_directory = os.path.dirname(os.path.abspath(__file__))
 data_directory = 'output'
 filename = 'basicblock_by_line'
