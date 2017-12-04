@@ -8,11 +8,11 @@ logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=lo
 current_directory = os.path.dirname(os.path.abspath(__file__))
 filename = 'basicblock_by_file'
 model_directory = 'model'
-modelname = filename+'_doc2vec.model'
-modellistname = 'model_list'
-model_path = os.path.join(current_directory, model_directory, modelname)
+model_directory2 = 'func_model'
+modelname = filename+'_func2vec.model'
+modellistname = 'func2vec_model_list'
+model_path = os.path.join(current_directory, model_directory, model_directory2, modelname)
 model_list_path = os.path.join(current_directory, model_directory, modellistname)
-
 
 model = doc2vec.Doc2Vec.load(model_path)
 funcvec = model.docvecs['fff564d59deec80ad5fcc92867e07b69_17']
