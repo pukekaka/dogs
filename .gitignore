@@ -35,6 +35,11 @@ model/
 .model/
 tensorboard
 .tensorboard/
+data_set/
+.data_set/
+temp/
+.temp/
+
 
 # PyInstaller
 #  Usually these files are written by a python script from a template

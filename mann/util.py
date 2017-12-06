@@ -31,12 +31,15 @@ def one_hot_decode(x):
     return np.argmax(x, axis=-1)
 
 
-class MalwareDataLoader:
-
-    def __init__(self, data_dir, image_size=(20, 20), n_train_classses=1200, n_test_classes=423):
-
+class SampleDataLoader:
+    def __init__(self, model_dir, insts_size, n_train_classes, n_test_classes):
+        self.data = []
+        self.insts_size = insts_size
 
     def load_model(self):
+
+        # docvec = model.docvecs['fff564d59deec80ad5fcc92867e07b69']
+
         model = doc2vec.Doc2Vec.load(model_path)
         # docvec = model.docvecs['fff564d59deec80ad5fcc92867e07b69_17']
         docvec = model.docvecs['fff564d59deec80ad5fcc92867e07b69']

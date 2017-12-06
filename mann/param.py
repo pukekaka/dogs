@@ -2,7 +2,8 @@
 
 class init_value:
     def __init__(self):
-        self.n_classes = 5
+        # self.n_classes = 5 # category size
+        n.classes = 16
         self.seq_length = 50  # time
         self.read_head_num = 4
         self.batch_size = 16
@@ -15,8 +16,7 @@ class init_value:
         self.memory_vector_dim = 40
         self.model_dir = 'model'
         self.tensorboard_dir = 'tensorboard'
-
-        self.image_width = 20
-        self.image_height = 20
-        self.n_train_classes = 1200
-        self.n_test_classes = 423
+        # self.n_train_classes = 1200
+        self.n_train_classes = 150
+        # self.n_test_classes = 423
+        self.n_test_classes = 73

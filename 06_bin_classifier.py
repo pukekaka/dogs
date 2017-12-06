@@ -6,7 +6,6 @@ from test_code.mann import util
 from test_code.mann import model
 from test_code.mann import param
 
-
 iv = param.init_value()
 mann = model.memory_augmented_neural_networks(iv)
 
@@ -15,14 +14,10 @@ model_directory = 'model'
 bin2vec_directory = 'bin_model'
 files_path = os.path.join(current_directory, model_directory, bin2vec_directory)
 
-nb_samples_per_class = 10
-batch_size = 16
-nb_class = 5
-
-data_loader = util.OmniglotDataLoader(
-            data_dir=files_path,
-            image_size=(iv.image_width, iv.image_height),
-            n_train_classses=iv.n_train_classes,
+data_loader = util.SampleDataLoader(
+            model_dir=files_path,
+            insts_size=iv.insts_size,
+            n_train_classes=iv.n_train_classes,
             n_test_classes=iv.n_test_classes
         )
 
