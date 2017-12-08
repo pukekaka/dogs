@@ -38,7 +38,6 @@ class OmniglotDataLoader:
         self.image_size = image_size
 
         for dirname, subdirname, filelist in os.walk(data_dir):
-
             if filelist:
                 self.data.append(
                     # [np.reshape(
@@ -53,19 +52,19 @@ class OmniglotDataLoader:
         self.train_data = self.data[:n_train_classses]
         self.test_data = self.data[-n_test_classes:]
 
-    def fetch_batch(self, n_classes, batch_size, seq_length,
-                    type='train',
-                    sample_strategy='random',
-                    augment=True,
-                    label_type='one_hot'):
+    def fetch_batch(self, n_classes, batch_size, seq_length, type='train', sample_strategy='random', augment=True, label_type='one_hot'):
 
         if type == 'train':
             data = self.train_data
         elif type == 'test':
             data = self.test_data
 
+        print(np.array(data).shape)
+        # print(len(self.data[1]))
         classes = [np.random.choice(range(len(data)), replace=False, size=n_classes) for _ in range(batch_size)]
 
+        print(np.array(classes).shape)
+        # print(classes)
         if sample_strategy == 'random':         # #(sample) per class may not be equal (sec 7)
             seq = np.random.randint(0, n_classes, [batch_size, seq_length])
         elif sample_strategy == 'uniform':      # #(sample) per class are equal
@@ -73,18 +72,32 @@ class OmniglotDataLoader:
                    for i in range(batch_size)])
             for i in range(batch_size):
                 np.random.shuffle(seq[i, :])
+        print(seq.shape)
+        # print(seq)
+        # print('seq', seq[0])
+
         self.rand_rotate_init(n_classes, batch_size)
+        # print(len(self.rand_rotate_map))
         seq_pic = [[self.augment(data[classes[i][j]][np.random.randint(0, len(data[classes[i][j]]))],
                                  batch=i, c=j,
                                  only_resize=not augment)
                    for j in seq[i, :]]
                    for i in range(batch_size)]
 
+        nseq_pic = np.array(seq_pic)
+
+        print(nseq_pic.shape)
+
+
         if label_type == 'one_hot':
             seq_encoded = one_hot_encode(seq, n_classes)
             seq_encoded_shifted = np.concatenate(
                 [np.zeros(shape=[batch_size, 1, n_classes]), seq_encoded[:, :-1, :]], axis=1
             )
+
+        # print(np.array(seq_encoded).shape)
+        # print(seq_encoded_shifted.shape)
+
         return seq_pic, seq_encoded_shifted, seq_encoded
 
     def rand_rotate_init(self, n_classes, batch_size):
@@ -104,4 +117,16 @@ class OmniglotDataLoader:
         max_value = np.max(np_image)    # normalization is important
         if max_value > 0.:
             np_image = np_image / max_value
+        # print(batch, c, len(np_image))
         return np_image
+
+path = 'E:/Project/PycharmProjects/dogs/test_code/data/omniglot/'
+
+data_loader = OmniglotDataLoader(
+            data_dir=path,
+            image_size=(20, 20),
+            n_train_classses=1200,
+            n_test_classes=423
+        )
+
+x_inst, x_label, y = data_loader.fetch_batch(5, 128, 50, type='train')

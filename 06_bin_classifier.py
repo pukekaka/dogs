@@ -2,9 +2,9 @@ import tensorflow as tf
 
 import os
 import numpy as np
-from test_code.mann import util
-from test_code.mann import model
-from test_code.mann import param
+from mann import util
+from mann import model
+from mann import param
 
 iv = param.init_value()
 mann = model.memory_augmented_neural_networks(iv)
@@ -14,11 +14,15 @@ model_directory = 'model'
 bin2vec_directory = 'bin_model'
 files_path = os.path.join(current_directory, model_directory, bin2vec_directory)
 
+
+temp_zip_path = 'E:/Project/PycharmProjects/dogs/temp/'
+temp_model_path = 'E:/Project/PycharmProjects/dogs/model/bin_model/basicblock_by_file_bin2vec.model'
+
 data_loader = util.SampleDataLoader(
-            model_dir=files_path,
-            insts_size=iv.insts_size,
-            n_train_classes=iv.n_train_classes,
-            n_test_classes=iv.n_test_classes
+            zip_dir=temp_zip_path,
+            model_dir=temp_model_path,
+            n_train_classes=120,
+            n_test_classes=20
         )
 
 
@@ -73,6 +77,7 @@ with tf.Session() as sess:
 
         # Training
         x_inst, x_label, y = data_loader.fetch_batch(iv.n_classes, iv.batch_size, iv.seq_length, type='train')
+        # x_inst, x_label, y = data_loader.fetch_batch(5, 128, 50, type='train')
         feed_dict = {mann.x_inst: x_inst, mann.x_label: x_label, mann.y: y}
         sess.run(mann.train_op, feed_dict=feed_dict)
         # print('Step', b)
