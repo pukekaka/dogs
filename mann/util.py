@@ -155,7 +155,12 @@ class SampleDataLoader:
         return seq_bin, seq_encoded_shifted, seq_encoded
 
     def docVec(self, h):
-        return self.model.docvecs[h]
+
+        d2v = np.array(self.model.docvecs[h])
+        max_value = np.max(d2v)  # normalization
+        if max_value > 0.:
+            d2v = d2v / max_value
+        return d2v
 #
 # zip_path = 'E:/Project/PycharmProjects/dogs/temp/'
 # model_path = 'E:/Project/PycharmProjects/dogs/model/bin_model/basicblock_by_file_bin2vec.model'
