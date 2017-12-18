@@ -5,16 +5,16 @@ import inflect
 
 
 current_directory = os.path.dirname(os.path.abspath(__file__))
-data_directory = 'data'
+data_directory = 'data2'
 output_directory = 'output'
-output_directory2 = 'each'
+output_directory2 = 'each2'
 suffix_filename = '_bb_by_line'
 # output_filename = 'basicblock_by_space'
 files_path = os.path.join(current_directory, data_directory)
 # output_path = os.path.join(current_directory, output_directory)
 # output_file = os.path.join(current_directory, output_directory, output_filename)
 
-count = 0
+tcount = 0
 
 for dir_seq in os.listdir(files_path):
     files_path = os.path.join(current_directory, data_directory, dir_seq)
@@ -46,10 +46,13 @@ for dir_seq in os.listdir(files_path):
     print('=> json object read start')
     print('-basicblock')
     for bb_filename in bb_filenamelist:
-        bb_data_file = open(bb_filename, encoding="utf-8-sig")
-        bb_data = json.load(bb_data_file)
-        bb_data_list.append(bb_data)
-        print('basicblock', count, 'complete', bb_filename)
+        try:
+            bb_data_file = open(bb_filename, encoding="utf-8-sig")
+            bb_data = json.load(bb_data_file)
+            bb_data_list.append(bb_data)
+            print('basicblock', count, 'complete', bb_filename)
+        except:
+            print('basicblock', count, 'error', bb_filename)
         count += 1
 
     print('-basicblocklist')
@@ -60,9 +63,9 @@ for dir_seq in os.listdir(files_path):
             bblist_data = json.load(bblist_data_file)
             bblist_data_list.append(bblist_data)
             print('basicblocklist', count, 'complete', bblist_filename)
-            count += 1
         except:
             print('basicblocklist', count, 'error', bblist_filename)
+        count += 1
 
 
 
@@ -249,4 +252,6 @@ for dir_seq in os.listdir(files_path):
 
     print('=> file write end')
     print('===================> count :', count)
-    count = count + 1
+
+    tcount = tcount + 1
+    print('!!!!!!!!!!!!!!!tcount!!!!!!!!!!!', tcount)

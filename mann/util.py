@@ -160,21 +160,21 @@ class SampleDataLoader:
         max_value = np.max(d2v)  # normalization
         if max_value > 0.:
             d2v = d2v / max_value
+
         return d2v
+
+zip_path = 'E:/Project/PycharmProjects/dogs/temp/'
+model_path = 'E:/Project/PycharmProjects/dogs/model/bin_model/basicblock_by_file_bin2vec.model'
+
+data_loader = SampleDataLoader(
+            zip_dir=zip_path,
+            model_dir=model_path,
+            n_train_classes=200,
+            n_test_classes=61
+        )
 #
-# zip_path = 'E:/Project/PycharmProjects/dogs/temp/'
-# model_path = 'E:/Project/PycharmProjects/dogs/model/bin_model/basicblock_by_file_bin2vec.model'
-#
-# data_loader = SampleDataLoader(
-#             zip_dir=zip_path,
-#             model_dir=model_path,
-#             insts_size=(20, 20),
-#             n_train_classes=200,
-#             n_test_classes=61
-#         )
-# #
-# x_inst, x_label, y = data_loader.fetch_batch(5, 128, 50, type='train')
-# # data_loader.fetch_batch(5, 128, 50, type='train')
+x_inst, x_label, y = data_loader.fetch_batch(5, 128, 50, type='train')
+# data_loader.fetch_batch(5, 128, 50, type='train')
 
 
 

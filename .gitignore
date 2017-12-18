@@ -39,7 +39,8 @@ data_set/
 .data_set/
 temp/
 .temp/
-
+data2
+.data/
 
 # PyInstaller
 #  Usually these files are written by a python script from a template
