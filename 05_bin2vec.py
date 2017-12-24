@@ -15,10 +15,11 @@ model_directory = 'model'
 model_directory2 = 'bin_model'
 modelname = filename+'_bin2vec.model'
 modellistname = 'bin2vec_model_list'
-file_path = os.path.join(current_directory, data_directory, data_directory2)
+# file_path = os.path.join(current_directory, data_directory, data_directory2)
+file_path = os.path.join(current_directory, data_directory)
 model_path = os.path.join(current_directory, model_directory, model_directory2, modelname)
 model_list_path = os.path.join(current_directory, model_directory, modellistname)
-each_zipfile = os.path.join(file_path, 'each.zip')
+each_zipfile = os.path.join(file_path, '_each_total.zip')
 
 
 '''
