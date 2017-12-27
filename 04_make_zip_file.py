@@ -42,7 +42,7 @@ def get_filelist(zip_path):
 
 filel = get_filelist(samples_zipfile)
 
-f = open('temp/label.csv', 'r', encoding='utf-8')
+f = open('output/label.csv', 'r', encoding='utf-8')
 rdr = csv.reader(f)
 count = 0
 
@@ -55,7 +55,7 @@ for line in rdr:
     ts = line[2]
     asd = line[3]
 
-    if ts == asd:
+    if ts == asd and asd != '':
         tsasd_list.append(line)
     else:
         ntsasd_list.append(line)
@@ -173,16 +173,16 @@ def write_zip(output_file, file_folder, file_list):
                 print('write zip error' + output_file)
         zf.close()
 
-# result = extract(samples_zipfile, temp_folder)
-#
-# if result == 0:
-#     m_file_list = list()
-#     for key in over20.keys():
-#         md5list = over20[key]
-#         for md5 in md5list:
-#             m_file_list.append(md5.strip())
-#
-#     write_zip(file_path+'/'+mann_dataset_filename, temp_folder, m_file_list)
+result = extract(samples_zipfile, temp_folder)
+
+if result == 0:
+    m_file_list = list()
+    for key in over20.keys():
+        md5list = over20[key]
+        for md5 in md5list:
+            m_file_list.append(md5.strip())
+
+    write_zip(file_path+'/'+mann_dataset_filename, temp_folder, m_file_list)
 
 write_zip(file_path+'/'+bin2vec_dataset_filename, temp_folder, doc2veclist)
 
