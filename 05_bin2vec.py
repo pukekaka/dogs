@@ -19,7 +19,8 @@ modellistname = 'bin2vec_model_list'
 file_path = os.path.join(current_directory, data_directory)
 model_path = os.path.join(current_directory, model_directory, model_directory2, modelname)
 model_list_path = os.path.join(current_directory, model_directory, modellistname)
-each_zipfile = os.path.join(file_path, '_each_total.zip')
+# each_zipfile = os.path.join(file_path, 'bin2vec_dataset.zip')
+each_zipfile = os.path.join(file_path, 'test_dataset.zip')
 
 
 '''
@@ -36,7 +37,7 @@ def read_data(filename):
         for bin in binList:
             buf = str()
             for idx, line in enumerate(f.open(bin)):
-                buf = buf + str(line.strip().decode('utf-8'))
+                buf = buf + str(line.strip().decode('utf-8') + ' ')
             bfLabel = bin
             wl = bfLabel + ' ' + buf + '\n'
             of.write(wl)
@@ -50,6 +51,9 @@ print('each.zip file read & list make completed')
 
 train_data = list(read_data(each_zipfile))
 print('train_data get completed')
+
+print(train_data[:2])
+
 
 model = doc2vec.Doc2Vec(size=400, window=10, min_count=5, iter=1000, workers=4)
 model.build_vocab(train_data)
