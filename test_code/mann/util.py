@@ -49,6 +49,9 @@ class OmniglotDataLoader:
                     [Image.open(dirname + '/' + filename).copy() for filename in filelist]
                 )
 
+        print(np.array(self.data).shape)
+        print(self.data[0][0])
+
         self.train_data = self.data[:n_train_classses]
         self.test_data = self.data[-n_test_classes:]
 
@@ -59,11 +62,14 @@ class OmniglotDataLoader:
         elif type == 'test':
             data = self.test_data
 
-        print(np.array(data).shape)
+        # print('train', np.array(data).shape)
+        # print('data size', len(data))
+
         # print(len(self.data[1]))
         classes = [np.random.choice(range(len(data)), replace=False, size=n_classes) for _ in range(batch_size)]
 
-        print(np.array(classes).shape)
+        # print('class size', len(classes))
+        # print('classes', np.array(classes).shape)
         # print(classes)
         if sample_strategy == 'random':         # #(sample) per class may not be equal (sec 7)
             seq = np.random.randint(0, n_classes, [batch_size, seq_length])
@@ -72,12 +78,14 @@ class OmniglotDataLoader:
                    for i in range(batch_size)])
             for i in range(batch_size):
                 np.random.shuffle(seq[i, :])
-        print(seq.shape)
+        # print('seq_shape', seq.shape)
         # print(seq)
         # print('seq', seq[0])
 
         self.rand_rotate_init(n_classes, batch_size)
         # print(len(self.rand_rotate_map))
+
+        # print('data', len(data[0]))
         seq_pic = [[self.augment(data[classes[i][j]][np.random.randint(0, len(data[classes[i][j]]))],
                                  batch=i, c=j,
                                  only_resize=not augment)
@@ -86,7 +94,7 @@ class OmniglotDataLoader:
 
         nseq_pic = np.array(seq_pic)
 
-        print(nseq_pic.shape)
+        # print(nseq_pic.shape)
 
 
         if label_type == 'one_hot':
@@ -114,10 +122,23 @@ class OmniglotDataLoader:
                 .resize(self.image_size)   # rotate between -pi/16 to pi/16, translate bewteen -10 and 10
         np_image = np.reshape(np.array(image, dtype=np.float32),
                           newshape=(self.image_size[0] * self.image_size[1]))
-        max_value = np.max(np_image)    # normalization is important
-        if max_value > 0.:
-            np_image = np_image / max_value
+        # print('1np', np_image)
+
+        # max_value = np.max(np_image)    # normalization is important
+        # if max_value > 0.:
+        #     np_image = np_image / max_value
+
+        np_image = np_image / np.linalg.norm(np_image)
+
+        # numerator = np_image - np.min(np_image, 0)
+        # denominator = np.max(np_image, 0) - np.min(np_image, 0)
+        # np_image = numerator / (denominator + 1e-7)
+
         # print(batch, c, len(np_image))
+
+        # print('2np', np_image)
+        # print('check', np_image.shape)
+        print(np_image)
         return np_image
 
 path = 'E:/Project/PycharmProjects/dogs/test_code/data/omniglot/'
@@ -125,8 +146,8 @@ path = 'E:/Project/PycharmProjects/dogs/test_code/data/omniglot/'
 data_loader = OmniglotDataLoader(
             data_dir=path,
             image_size=(20, 20),
-            n_train_classses=1200,
-            n_test_classes=423
+            n_train_classses=13,
+            n_test_classes=2
         )
 
 x_inst, x_label, y = data_loader.fetch_batch(5, 128, 50, type='train')

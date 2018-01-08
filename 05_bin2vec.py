@@ -19,8 +19,8 @@ modellistname = 'bin2vec_model_list'
 file_path = os.path.join(current_directory, data_directory)
 model_path = os.path.join(current_directory, model_directory, model_directory2, modelname)
 model_list_path = os.path.join(current_directory, model_directory, modellistname)
-each_zipfile = os.path.join(file_path, 'bin2vec_dataset.zip')
-# each_zipfile = os.path.join(file_path, 'test_dataset.zip')
+# each_zipfile = os.path.join(file_path, 'bin2vec_dataset.zip')
+each_zipfile = os.path.join(file_path, 'mann_dataset.zip')
 
 
 '''

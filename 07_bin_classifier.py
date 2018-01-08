@@ -1,29 +1,21 @@
 import tensorflow as tf
 
-import os
 import numpy as np
 from mann import util
 from mann import model
 from mann import param
 
+
 iv = param.init_value()
 mann = model.memory_augmented_neural_networks(iv)
 
-current_directory = os.path.dirname(os.path.abspath(__file__))
-model_directory = 'model'
-bin2vec_directory = 'bin_model'
-files_path = os.path.join(current_directory, model_directory, bin2vec_directory)
-
-
-temp_zip_path = 'E:/Project/PycharmProjects/dogs/temp/'
-temp_model_path = 'E:/Project/PycharmProjects/dogs/model/bin_model/basicblock_by_file_bin2vec.model'
-
 data_loader = util.SampleDataLoader(
-            zip_dir=temp_zip_path,
-            model_dir=temp_model_path,
-            n_train_classes=120,
-            n_test_classes=20
-        )
+    label_path=iv.label_path,
+    model_path=iv.model_path,
+    data_path=iv.data_path,
+    n_train_classes=iv.n_train_classes,
+    n_test_classes=iv.n_test_classes
+)
 
 
 def test_f(args, y, output):
@@ -47,21 +39,17 @@ def test_f(args, y, output):
     return [float(correct[i]) / total[i] if total[i] > 0. else 0. for i in range(1, 11)]
 
 
-
-
 with tf.Session() as sess:
     saver = tf.train.Saver(tf.global_variables())
     tf.global_variables_initializer().run()
     train_writer = tf.summary.FileWriter(iv.tensorboard_dir+'/'+'mann', sess.graph)
-    print(iv)
     print("1st\t2nd\t3rd\t4th\t5th\t6th\t7th\t8th\t9th\t10th\tbatch\tloss")
 
     for b in range(iv.num_epoches):
 
         # Result Test
         if b % 100 == 0:
-            x_inst, x_label, y = data_loader.fetch_batch(iv.n_classes, iv.batch_size, iv.seq_length,
-                                                          type='test')
+            x_inst, x_label, y = data_loader.fetch_batch(iv.n_classes, iv.batch_size, iv.seq_length, type='test')
             feed_dict = {mann.x_inst: x_inst, mann.x_label: x_label, mann.y: y}
             output, learning_loss = sess.run([mann.o, mann.learning_loss], feed_dict=feed_dict)
             merged_summary = sess.run(mann.learning_loss_summary, feed_dict=feed_dict)
@@ -73,7 +61,7 @@ with tf.Session() as sess:
 
         # Saving
         if b % 5000 == 0 and b > 0:
-            saver.save(sess, iv.model_dir + '/' + 'mann.tfmodel', global_step=b)
+            saver.save(sess, iv.save_dir + '/' + 'mann.tfmodel', global_step=b)
 
         # Training
         x_inst, x_label, y = data_loader.fetch_batch(iv.n_classes, iv.batch_size, iv.seq_length, type='train')

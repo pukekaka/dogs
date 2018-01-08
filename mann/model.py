@@ -8,7 +8,7 @@ class memory_augmented_neural_networks():
 
         self.x_inst = tf.placeholder(dtype=tf.float32, shape=[values.batch_size,
                                                               values.seq_length,
-                                                              values.insts_size])
+                                                              values.sample_size])
         self.x_label = tf.placeholder(dtype=tf.float32, shape=[values.batch_size,
                                                                values.seq_length,
                                                                values.output_dim])

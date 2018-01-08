@@ -1,19 +1,14 @@
 import numpy as np
-import os
+import pandas as pd
 from gensim.models import doc2vec
 import logging
 import zipfile
+import csv
+from sklearn.preprocessing import MinMaxScaler
+import os
 
 logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
 
-current_directory = os.path.dirname(os.path.abspath(__file__))
-filename = 'basicblock_by_file'
-model_directory = 'model'
-model_directory2 = 'bin_model'
-modelname = filename + '_bin2vec.model'
-modellistname = 'bin2vec_model_list'
-model_path = os.path.join(current_directory, model_directory, model_directory2, modelname)
-model_list_path = os.path.join(current_directory, model_directory, modellistname)
 
 def one_hot_encode(x, dim):
     res = np.zeros(np.shape(x) + (dim, ), dtype=np.float32)
@@ -23,108 +18,217 @@ def one_hot_encode(x, dim):
         it.iternext()
     return res
 
+
 def one_hot_decode(x):
     return np.argmax(x, axis=-1)
 
 
-class ModelData:
-    def __init__(self):
-        self.current_directory = os.path.dirname(os.path.abspath(__file__))
-        self.data_directory = 'temp'
-        self.file_path = os.path.join(self.current_directory, self.data_directory)
-        # self.label_list_zipfile = os.path.join(self.file_path, 'label_list.zip')
-        self.label_list_zipfile = 'E:/Project/PycharmProjects/dogs/temp/label_list.zip'
-        # zip_path = 'E:/Project/PycharmProjects/dogs/temp/label_list.zip'
-        # self.each_zipfile = os.path.join(self.file_path, 'each.zip')
-        self.each_zipfile = 'E:/Project/PycharmProjects/dogs/temp/each.zip'
-        self.filename = 'basicblock_by_file'
-        self.model_directory = 'model'
-        self.model_directory2 = 'bin_model'
-        self.model_name = self.filename + '_bin2vec.model'
-        # self.model_path = os.path.join(self.current_directory, self.model_directory, self.model_directory2, self.model_name)
-        self.model_path = 'E:/Project/PycharmProjects/dogs/model/bin_model/basicblock_by_file_bin2vec.model'
+def read_data(zip_file):
 
-    def read_label_file(self, label_zip_path):
-        file_dict = dict()
-        with zipfile.ZipFile(label_zip_path) as f:
-            category_file_List = [c for c in f.namelist()]
-            # category_List = [c.split('.')[0] for c in f.namelist()]
-            for file in category_file_List:
-                count = 0
-                for idx, line in enumerate(f.open(file)):
-                    file_info = list()
-                    if idx != 0:
-                        data = line.decode('utf-8').split('\t')
-                        # file_info.append(data[1].strip()) # hash
-                        file_info.append(data[3].strip())  # TS
-                        file_info.append(data[4].strip())  # ASD
-                        file_info.append(file.split('.')[0].strip())  # category
-                        file_dict[data[1].strip()] = file_info
-                        count = count + 1
-                # print(file, count)
-        return file_dict
+    sample_dict = dict()
 
-    def make_class_dict(self, hl_dict):
-        category_hash_dict = dict()
-        category_list = list(set([hl_dict[hl][2] for hl in hl_dict.keys()]))
-        for category in category_list:
-            hash_vlist = list()
-            for hl in hl_dict.keys():
-                cv = hl_dict[hl][2]
-                if cv == category:
-                    hash_vlist.append(hl)
-            category_hash_dict[category] = hash_vlist
-        return category_hash_dict
+    with zipfile.ZipFile(zip_file) as f:
+        binList = [hash for hash in f.namelist()]
 
-    def get_data(self):
-        self.label_dict = self.read_label_file(self.label_list_zipfile)
-        ch_dict = self.make_class_dict(self.label_dict)
+        for bin in binList:
+            buf = str()
+            bfLabel = bin
 
-        return ch_dict
+            for idx, line in enumerate(f.open(bin)):
+                buf = buf + str(line.strip().decode('utf-8') + ' ')
+
+            sample_dict[bfLabel] = buf.strip()
+
+    return sample_dict
 
 class SampleDataLoader:
-    def __init__(self, zip_dir, model_dir, n_train_classes, n_test_classes):
+    def __init__(self, label_path, model_path, data_path, n_train_classes, n_test_classes):
         self.data = []
         self.filename_list = []
-        self.md = ModelData()
-        self.sample_data_dict = self.md.get_data()
-        self.model_path = 'E:/Project/PycharmProjects/dogs/model/bin_model/basicblock_by_file_bin2vec.model'
+        self.label_path = label_path
+        self.model_path = model_path
+        self.n_train_classes = n_train_classes
+        self.n_test_classes = n_test_classes
+        self.processing_count = 0
+
+        '''
+        infer version
+        '''
+        # f = open(self.label_path, 'r', encoding='utf-8')
+        # rdr = csv.reader(f)
+
+        # Make mann list & dictionary
+        # self.mann_dataset_list = list()
+        # self.mann_dataset_dict = dict()
+        # self.dataset_label_dict = dict()
+        # for line in rdr:
+        #     md5 = line[0]
+        #     detect_name = line[1]
+        #     dataset = line[2]
+        #     if dataset == 'mann':
+        #         self.mann_dataset_list.append(md5)
+        #         if self.mann_dataset_dict.get(detect_name) is None:
+        #             temp_list = list()
+        #             temp_list.append(md5)
+        #             self.mann_dataset_dict[detect_name] = temp_list
+        #         else:
+        #             self.mann_dataset_dict[detect_name].append(md5)
+
+        # Move data <- mann_dataset
+        # label_count = 0
+        # for key in self.mann_dataset_dict.keys():
+        #     self.data.append(self.mann_dataset_dict[key])
+        #     self.dataset_label_dict[key] = label_count
+        #     label_count = label_count + 1
+
+        # Infer mann data file's vectors
+        # self.model = doc2vec.Doc2Vec.load(self.model_path)
+        # zipfile_path = 'E:/Project/PycharmProjects/dogs/output/mann_dataset.zip'
+        # self.s_dict = read_data(zipfile_path)
+
+        # self.infer_vec_dict = dict()
+        # size = len(self.s_dict.keys())
+        # infer_count = 1
+
+        # for key in self.s_dict.keys():
+        #     insts = self.s_dict[key].split()
+        #     self.infer_vec_dict[key] = self.model.infer_vector(insts, alpha=0.1, min_alpha=0.0001, steps=5)
+        #     print('infer complete', infer_count, '/', size, ':', key)
+        #     infer_count = infer_count + 1
+
+        '''
+        infer version end
+        '''
+
+        '''
+        test infer version
+        '''
+        #
+        # f = open(self.label_path, 'r', encoding='utf-8')
+        # rdr = csv.reader(f)
+        #
+        # # Make mann list & dictionary
+        # self.mann_dataset_list = list()
+        # self.mann_dataset_dict = dict()
+        # self.dataset_label_dict = dict()
+        # for line in rdr:
+        #     md5 = line[0]
+        #     detect_name = line[1]
+        #     dataset = line[2]
+        #     if dataset == 'mann':
+        #         self.mann_dataset_list.append(md5)
+        #         if self.mann_dataset_dict.get(detect_name) is None:
+        #             temp_list = list()
+        #             temp_list.append(md5)
+        #             self.mann_dataset_dict[detect_name] = temp_list
+        #         else:
+        #             self.mann_dataset_dict[detect_name].append(md5)
+        #
+        # self.model = doc2vec.Doc2Vec.load(self.model_path)
+        # zipfile_path = 'E:/Project/PycharmProjects/dogs/output/mann_dataset.zip'
+        # self.s_dict = read_data(zipfile_path)
+        #
+        # category = 15
+        # each_file = 20
+        #
+        # self.sample_mann_dataset_dict = dict()
+        # self.sample_s_dict = dict()
+        # sample_category_count = 0
+        #
+        # for md_key in self.mann_dataset_dict.keys():
+        #     if sample_category_count < category:
+        #         self.sample_mann_dataset_dict[md_key] = self.mann_dataset_dict[md_key]
+        #
+        #         # Move data <- mann_dataset
+        #         hash_list = self.mann_dataset_dict[md_key]
+        #         self.data.append(hash_list)
+        #
+        #         for hash in hash_list:
+        #             self.sample_s_dict[hash] = self.s_dict[hash]
+        #     sample_category_count = sample_category_count + 1
+
+        # print(len(self.sample_s_dict.keys()))
+        # size = category * each_file
+        # infer_count = 1
+        # self.infer_vec_dict = dict()
+
+        # for key in self.sample_s_dict.keys():
+        #     # insts = self.sample_s_dict[key].split()
+        #     self.infer_vec_dict[key] = self.model.docvecs[key]
+        #     # self.infer_vec_dict[key] = self.model.infer_vector(insts, alpha=0.1, min_alpha=0.0001, steps=5)
+        #     print('infer complete', infer_count, '/', size, ':', key)
+        #     infer_count = infer_count + 1
+
+        '''
+        test infer version end
+        '''
+
+        '''
+        test version
+        '''
+        #
+        # f = open(self.label_path, 'r', encoding='utf-8')
+        # rdr = csv.reader(f)
+        #
+        # self.bin_dataset_list = list()
+        # self.bin_dataset_dict = dict()
+        # self.dataset_label_dict = dict()
+        # label_count = 0
+        #
+        # for line in rdr:
+        #     md5 = line[0]
+        #     detect_name = line[1]
+        #     dataset = line[2]
+        #     if dataset == 'bin2vec':
+        #         self.bin_dataset_list.append(md5)
+        #         if self.bin_dataset_dict.get(detect_name) is None:
+        #             temp_list = list()
+        #             temp_list.append(md5)
+        #             self.bin_dataset_dict[detect_name] = temp_list
+        #         else:
+        #             self.bin_dataset_dict[detect_name].append(md5)
+        #
+        # for key in self.bin_dataset_dict.keys():
+        #     self.data.append(self.bin_dataset_dict[key])
+        #     self.dataset_label_dict[key] = label_count
+        #     label_count = label_count + 1
+        #
+        # category = 15
+        # each_file = 20
+        # get_count = 1
+        # self.infer_vec_dict = dict()
+        #
+        # self.model = doc2vec.Doc2Vec.load(self.model_path)
+        # for bin in self.bin_dataset_list:
+        #     self.infer_vec_dict[bin] = self.model.docvecs[bin]
+        #     print('get complete', get_count, '/', category * each_file, ':', bin)
+        #     get_count = get_count + 1
+
+        '''
+        test version end
+        '''
+
+        '''
+        new version
+        '''
+
         self.model = doc2vec.Doc2Vec.load(self.model_path)
 
-        for category in self.sample_data_dict.keys():
-            temp_list = list()
-            for h in self.sample_data_dict[category]:
-                try:
-                    if len(temp_list) < 20:
-                        docvec = self.model.docvecs[h]
-                        temp_list.append(h)
-                        # print(temp_list)
-                except:
-                    pass
-            self.data.append(temp_list)
-        # zip_file = zip_dir + 'each.zip'
-        # with zipfile.ZipFile(zip_file) as f:
-        #     self.filename_list = [h_file for h_file in f.namelist()]
-        #
-        # for self.filename in self.filename_list:
-        #     self.data.append(self.model.docvecs[self.filename])
-        #
-        #
-        # print(np.array(self.data).shape)
-        # print(len(self.data[0]))
-        self.ndata = []
-        for d in self.data:
-            if len(d) == 20:
-                self.ndata.append(d)
-        self.data = self.ndata
+        for dirname, subdirname, filelist in os.walk(data_path):
+            if filelist:
+                self.data.append(
+                    # [np.reshape(
+                    #     np.array(Image.open(dirname + '/' + filename).resize(image_size), dtype=np.float32),
+                    #     newshape=(image_size[0] * image_size[1])
+                    #     )
+                    #     for filename in filelist]
+                    # [io.imread(dirname + '/' + filename).astype(np.float32) / 255 for filename in filelist]
+                    [filename for filename in filelist]
+                )
 
+        # train_data=112 / test_data=48
         self.train_data = self.data[:n_train_classes]
         self.test_data = self.data[-n_test_classes:]
-
-        # print(np.array(self.data).shape)
-        # print(len(self.train_data))
-        # print(len(self.test_data))
-
 
     def fetch_batch(self, n_classes, batch_size, seq_length, type='train', label_type='one_hot'):
 
@@ -133,18 +237,14 @@ class SampleDataLoader:
         elif type == 'test':
             data = self.test_data
 
-
+        # Random arrange in each 5
+        # print(len(data))
         classes = [np.random.choice(range(len(data)), replace=False, size=n_classes) for _ in range(batch_size)]
-        # print(np.array(classes).shape)
-        # print(classes)
-
         seq = np.random.randint(0, n_classes, [batch_size, seq_length])
-        # print(np.array(seq).shape)
-        # print(seq)
-        seq_bin = [[self.docVec(data[classes[i][j]][np.random.randint(0, len(data[classes[i][j]]))])
+
+        seq_bin = [[self.getVec(data[classes[i][j]][np.random.randint(0, len(data[classes[i][j]]))])
                     for j in seq[i, :]]
                     for i in range(batch_size)]
-        # print(len(seq_bin[0][0]))
 
         if label_type == 'one_hot':
             seq_encoded = one_hot_encode(seq, n_classes)
@@ -154,27 +254,57 @@ class SampleDataLoader:
 
         return seq_bin, seq_encoded_shifted, seq_encoded
 
-    def docVec(self, h):
+    def getVec(self, label):
+        # x = np.array(self.infer_vec_dict[label])
+        x = np.array(self.model.docvecs[label])
+        '''
+        pandas Nomalization
+        '''
+        # x = self.infer_vec_dict[label]
+        #
+        # # normalization
+        # p_data = pd.DataFrame(data=x)
+        # pd_norm = (p_data - p_data.mean()) / (p_data.max() - p_data.min())
+        #
+        # v = np.array(pd_norm[0])
 
-        d2v = np.array(self.model.docvecs[h])
-        max_value = np.max(d2v)  # normalization
-        if max_value > 0.:
-            d2v = d2v / max_value
+        '''
+        sample Normalization
+        '''
+        # max_value = np.max(x)    # normalization is important
+        # if max_value > 0.:
+        #     v = x / max_value
 
-        return d2v
+        '''
+        numpy Normalization
+        '''
+        # v = x / np.linalg.norm(x)
 
-zip_path = 'E:/Project/PycharmProjects/dogs/temp/'
-model_path = 'E:/Project/PycharmProjects/dogs/model/bin_model/basicblock_by_file_bin2vec.model'
+        '''
+        Scaler
+        '''
+        numerator = x - np.min(x, 0)
+        denominator = np.max(x, 0) - np.min(x, 0)
+        v = numerator / (denominator + 1e-7)
+        # scaler = MinMaxScaler(feature_range=(0, 1))
+        # v = scaler.fit_transform([x])
+        # print(v)
+        # print(np.array(v).shape)
+        # print (v)
 
-data_loader = SampleDataLoader(
-            zip_dir=zip_path,
-            model_dir=model_path,
-            n_train_classes=200,
-            n_test_classes=61
-        )
+        # v = x
+        # print(v)
+        return v
+
+
+# from mann import param
 #
-x_inst, x_label, y = data_loader.fetch_batch(5, 128, 50, type='train')
-# data_loader.fetch_batch(5, 128, 50, type='train')
-
-
-
+# iv = param.init_value()
+# data_loader = SampleDataLoader(
+#     label_path=iv.label_path,
+#     model_path=iv.model_path,
+#     data_path=iv.data_path,
+#     n_train_classes=iv.n_train_classes,
+#     n_test_classes=iv.n_test_classes
+# )
+# x_inst, x_label, y = data_loader.fetch_batch(iv.n_classes, iv.batch_size, iv.seq_length, type='train')
