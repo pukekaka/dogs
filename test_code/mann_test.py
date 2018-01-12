@@ -13,7 +13,8 @@ mann = model.memory_augmented_neural_networks(iv)
 current_directory = os.path.dirname(os.path.abspath(__file__))
 data_directory = 'data'
 omniglot_directory = 'omniglot'
-files_path = os.path.join(current_directory, data_directory, omniglot_directory)
+# files_path = os.path.join(current_directory, data_directory, omniglot_directory)
+files_path = os.path.join(current_directory, data_directory)
 
 nb_samples_per_class = 10
 batch_size = 16

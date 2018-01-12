@@ -60,7 +60,8 @@ print('train_data get completed')
 print(train_data[:2])
 
 
-model = doc2vec.Doc2Vec(size=400, window=10, min_count=5, iter=1000, workers=4)
+# model = doc2vec.Doc2Vec(size=400, window=10, min_count=5, iter=1000, workers=4)
+model = doc2vec.Doc2Vec(size=50, window=10, min_count=5, iter=1000, workers=4)
 model.build_vocab(train_data)
 model.save(model_path)
 

@@ -46,6 +46,13 @@ class memory_augmented_neural_networks():
             tf.reduce_sum(self.y * tf.log(self.o + eps), axis=[1, 2])
         )
 
+        # self.learning_loss = -tf.reduce_mean(self.y * tf.log(tf.clip_by_value(self.o, eps, 1.0)) + (1-self.y) * tf.log(tf.clip_by_value(self.o, eps, 1.0)))
+
+        # self.learning_loss = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(labels=self.y, logits=self.o))
+        # updates = tf.train.GradientDescentOptimizer(0.01).minimize(cost)
+        # cost = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=output_var, labels=target_ph_oh),
+        #                       name="cost")
+
         self.o = tf.reshape(self.o, shape=[values.batch_size, values.seq_length, -1])
         self.learning_loss_summary = tf.summary.scalar('learning_loss', self.learning_loss)
 

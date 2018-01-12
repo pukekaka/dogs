@@ -46,9 +46,12 @@ class memory_augmented_neural_networks():
             tf.reduce_sum(self.y * tf.log(self.o + eps), axis=[1, 2])
         )
 
+        # self.learning_loss = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(labels=self.y, logits=self.o))
+
         self.o = tf.reshape(self.o, shape=[values.batch_size, values.seq_length, -1])
         self.learning_loss_summary = tf.summary.scalar('learning_loss', self.learning_loss)
 
         with tf.variable_scope('optimizer'):
             self.optimizer = tf.train.AdamOptimizer(learning_rate=values.learning_rate)
+            # self.optimizer = tf.train.RMSPropOptimizer(learning_rate=values.learning_rate)
             self.train_op = self.optimizer.minimize(self.learning_loss)

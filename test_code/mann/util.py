@@ -49,8 +49,8 @@ class OmniglotDataLoader:
                     [Image.open(dirname + '/' + filename).copy() for filename in filelist]
                 )
 
-        print(np.array(self.data).shape)
-        print(self.data[0][0])
+        # print(np.array(self.data).shape)
+        # print(self.data[0][0])
 
         self.train_data = self.data[:n_train_classses]
         self.test_data = self.data[-n_test_classes:]
@@ -89,13 +89,13 @@ class OmniglotDataLoader:
         seq_pic = [[self.augment(data[classes[i][j]][np.random.randint(0, len(data[classes[i][j]]))],
                                  batch=i, c=j,
                                  only_resize=not augment)
+                                 # batch=i, c=j)
                    for j in seq[i, :]]
                    for i in range(batch_size)]
 
-        nseq_pic = np.array(seq_pic)
-
+        # nseq_pic = np.array(seq_pic)
+        #
         # print(nseq_pic.shape)
-
 
         if label_type == 'one_hot':
             seq_encoded = one_hot_encode(seq, n_classes)
@@ -120,15 +120,16 @@ class OmniglotDataLoader:
                 .rotate(rand_rotate + np.random.rand() * 22.5 - 11.25,
                         translate=np.random.randint(-10, 11, size=2).tolist()) \
                 .resize(self.image_size)   # rotate between -pi/16 to pi/16, translate bewteen -10 and 10
+        # image = ImageOps.invert(image.convert('L')).resize(self.image_size)
         np_image = np.reshape(np.array(image, dtype=np.float32),
                           newshape=(self.image_size[0] * self.image_size[1]))
-        # print('1np', np_image)
-
-        # max_value = np.max(np_image)    # normalization is important
-        # if max_value > 0.:
-        #     np_image = np_image / max_value
-
-        np_image = np_image / np.linalg.norm(np_image)
+        # print(np_image)
+        # print(np_image)
+        max_value = np.max(np_image)    # normalization is important
+        if max_value > 0.:
+            np_image = np_image / max_value
+        # print(np_image)
+        # np_image = np_image / np.linalg.norm(np_image)
 
         # numerator = np_image - np.min(np_image, 0)
         # denominator = np.max(np_image, 0) - np.min(np_image, 0)
@@ -138,16 +139,17 @@ class OmniglotDataLoader:
 
         # print('2np', np_image)
         # print('check', np_image.shape)
-        print(np_image)
+        # print(np_image)
+        # print(np_image)
         return np_image
 
-path = 'E:/Project/PycharmProjects/dogs/test_code/data/omniglot/'
-
-data_loader = OmniglotDataLoader(
-            data_dir=path,
-            image_size=(20, 20),
-            n_train_classses=13,
-            n_test_classes=2
-        )
-
-x_inst, x_label, y = data_loader.fetch_batch(5, 128, 50, type='train')
+# path = 'E:/Project/PycharmProjects/dogs/test_code/data/'
+#
+# data_loader = OmniglotDataLoader(
+#             data_dir=path,
+#             image_size=(20, 20),
+#             n_train_classses=13,
+#             n_test_classes=2
+#         )
+#
+# x_inst, x_label, y = data_loader.fetch_batch(5, 16, 50, type='train')

@@ -246,6 +246,8 @@ class SampleDataLoader:
                     for j in seq[i, :]]
                     for i in range(batch_size)]
 
+        # print(np.array(seq_bin).shape)
+
         if label_type == 'one_hot':
             seq_encoded = one_hot_encode(seq, n_classes)
             seq_encoded_shifted = np.concatenate(
@@ -278,14 +280,14 @@ class SampleDataLoader:
         '''
         numpy Normalization
         '''
-        # v = x / np.linalg.norm(x)
+        v = x / np.linalg.norm(x)
 
         '''
         Scaler
         '''
-        numerator = x - np.min(x, 0)
-        denominator = np.max(x, 0) - np.min(x, 0)
-        v = numerator / (denominator + 1e-7)
+        # numerator = x - np.min(x, 0)
+        # denominator = np.max(x, 0) - np.min(x, 0)
+        # v = numerator / (denominator + 1e-7)
         # scaler = MinMaxScaler(feature_range=(0, 1))
         # v = scaler.fit_transform([x])
         # print(v)
@@ -296,7 +298,7 @@ class SampleDataLoader:
         # print(v)
         return v
 
-
+#
 # from mann import param
 #
 # iv = param.init_value()

@@ -181,7 +181,7 @@ norm_value_dict = dict()
 for key in value_dict.keys():
     x = value_dict[key]
 
-    # v = x
+    v = x
 
     # v = x / np.linalg.norm(x)
 
@@ -189,9 +189,9 @@ for key in value_dict.keys():
     # if max_value > 0.:
     #     v = x / max_value
 
-    numerator = x - np.min(x, 0)
-    denominator = np.max(x, 0) - np.min(x, 0)
-    v = numerator / (denominator + 1e-7)
+    # numerator = x - np.min(x, 0)
+    # denominator = np.max(x, 0) - np.min(x, 0)
+    # v = numerator / (denominator + 1e-7)
 
     norm_value_dict[key] = v
 
