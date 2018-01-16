@@ -114,17 +114,15 @@ class OmniglotDataLoader:
     def augment(self, image, batch, c, only_resize=False):
         if only_resize:
             image = ImageOps.invert(image.convert('L')).resize(self.image_size)
+
         else:
             rand_rotate = self.rand_rotate_map[batch, c] * 90                       # rotate by 0, pi/2, pi, 3pi/2
             image = ImageOps.invert(image.convert('L')) \
                 .rotate(rand_rotate + np.random.rand() * 22.5 - 11.25,
                         translate=np.random.randint(-10, 11, size=2).tolist()) \
                 .resize(self.image_size)   # rotate between -pi/16 to pi/16, translate bewteen -10 and 10
-        # image = ImageOps.invert(image.convert('L')).resize(self.image_size)
         np_image = np.reshape(np.array(image, dtype=np.float32),
                           newshape=(self.image_size[0] * self.image_size[1]))
-        # print(np_image)
-        # print(np_image)
         max_value = np.max(np_image)    # normalization is important
         if max_value > 0.:
             np_image = np_image / max_value
@@ -140,7 +138,7 @@ class OmniglotDataLoader:
         # print('2np', np_image)
         # print('check', np_image.shape)
         # print(np_image)
-        # print(np_image)
+        # print(np_image[5000])
         return np_image
 
 # path = 'E:/Project/PycharmProjects/dogs/test_code/data/'

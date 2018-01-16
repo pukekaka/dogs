@@ -18,5 +18,5 @@ class init_value:
 
         self.image_width = 20
         self.image_height = 20
-        self.n_train_classes = 10
-        self.n_test_classes = 5
+        self.n_train_classes = 42
+        self.n_test_classes = 17

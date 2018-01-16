@@ -53,8 +53,6 @@ def test_f(args, y, output):
     return [float(correct[i]) / total[i] if total[i] > 0. else 0. for i in range(1, 11)]
 
 
-
-
 with tf.Session() as sess:
     saver = tf.train.Saver(tf.global_variables())
     tf.global_variables_initializer().run()
