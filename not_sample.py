@@ -183,7 +183,7 @@ change gray -> binary image
 change Binary -> binary image file
 '''
 import cv2
-#
+
 # data_folder = 'E:/Works/Data2/sample'
 # save_folder = 'E:/Works/Data2/sample_png'
 #
@@ -222,28 +222,28 @@ import cv2
 
 
 
-data_folder = 'E:/Works/Data2/sample_png'
-save_folder = 'E:/Works/Data2/sample_binary_75'
-
-count = 1
-for (path, dir, files) in os.walk(data_folder):
-    for filename in files:
-        category = path.split('\\')[1]
-        p = os.path.join(path, filename)
-
-        im_gray = cv2.imread(p, cv2.IMREAD_GRAYSCALE)
-        (thresh, im_bw) = cv2.threshold(im_gray, 128, 255, cv2.THRESH_BINARY | cv2.THRESH_OTSU)
-        thresh = 75
-        im_bw = cv2.threshold(im_gray, thresh, 255, cv2.THRESH_BINARY)[1]
-
-        sp = os.path.join(save_folder, category)
-        if not os.path.exists(sp):
-            os.makedirs(sp)
-        sp2 = os.path.join(save_folder, category, filename)
-        # sp_t = os.path.join(save_folder, filename + '.png')
-        cv2.imwrite(sp2, im_bw)
-        print('complete', count, '/1180')
-        count = count + 1
+# data_folder = 'E:/Works/Data2/sample_png'
+# save_folder = 'E:/Works/Data2/sample_binary_100'
+#
+# count = 1
+# for (path, dir, files) in os.walk(data_folder):
+#     for filename in files:
+#         category = path.split('\\')[1]
+#         p = os.path.join(path, filename)
+#
+#         im_gray = cv2.imread(p, cv2.IMREAD_GRAYSCALE)
+#         (thresh, im_bw) = cv2.threshold(im_gray, 128, 255, cv2.THRESH_BINARY | cv2.THRESH_OTSU)
+#         thresh = 100
+#         im_bw = cv2.threshold(im_gray, thresh, 255, cv2.THRESH_BINARY)[1]
+#
+#         sp = os.path.join(save_folder, category)
+#         if not os.path.exists(sp):
+#             os.makedirs(sp)
+#         sp2 = os.path.join(save_folder, category, filename)
+#         # sp_t = os.path.join(save_folder, filename + '.png')
+#         cv2.imwrite(sp2, im_bw)
+#         print('complete', count, '/1240')
+#         count = count + 1
 
 
 # data_folder = 'E:/Works/Data2/sample_binary'
