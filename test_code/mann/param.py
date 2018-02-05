@@ -8,7 +8,7 @@ class init_value:
         self.batch_size = 16
         self.insts_size = 400
         self.num_epoches = 100000
-        self.learning_rate = 1e-4
+        self.learning_rate = 1e-3
         self.rnn_size = 200
         self.rnn_num_layers = 1
         self.memory_size = 128
@@ -19,4 +19,4 @@ class init_value:
         self.image_width = 20
         self.image_height = 20
         self.n_train_classes = 42
-        self.n_test_classes = 17
+        self.n_test_classes = 18

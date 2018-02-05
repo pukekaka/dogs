@@ -6,6 +6,8 @@ from test_code.mann import util
 from test_code.mann import model
 from test_code.mann import param
 
+from sklearn.metrics import *
+
 
 iv = param.init_value()
 mann = model.memory_augmented_neural_networks(iv)
@@ -37,11 +39,10 @@ def test_f(args, y, output):
     total = [0] * args.seq_length
     y_decode = util.one_hot_decode(y)
     output_decode = util.one_hot_decode(output)
+
     for i in range(np.shape(y)[0]):
         y_i = y_decode[i]
         output_i = output_decode[i]
-        # print(y_i)
-        # print(output_i)
         class_count = {}
         for j in range(args.seq_length):
             if y_i[j] not in class_count:
@@ -50,27 +51,58 @@ def test_f(args, y, output):
             total[class_count[y_i[j]]] += 1
             if y_i[j] == output_i[j]:
                 correct[class_count[y_i[j]]] += 1
+
+            # print('class_count', class_count)
+            # print('correct', correct)
+
+        # print('last correct: ', correct)
+
+    # print('accuracy', [float(correct[i]) / total[i] if total[i] > 0. else 0. for i in range(1, 11)])
     return [float(correct[i]) / total[i] if total[i] > 0. else 0. for i in range(1, 11)]
+
+def test_f2(args, y, output):
+    y_decode = util.one_hot_decode(y)
+    output_decode = util.one_hot_decode(output)
+
+    label_list = list()
+    prediction_list = list()
+
+    for i in range(np.shape(y)[0]):
+        y_i = y_decode[i]
+        output_i = output_decode[i]
+        label_list.extend(y_i)
+        prediction_list.extend(output_i)
+
+    print(confusion_matrix(label_list, prediction_list))
+    print(classification_report(label_list, prediction_list))
+    # fpr1, tpr1, thresholds1 = roc_curve(label_list, prediction_list)
+    # print('auc', auc(fpr1, tpr1))
+
+    # print('labelcount', np.shape(label_list))
+    # print('predictioncount', np.shape(prediction_list))
+
+    return 1
 
 
 with tf.Session() as sess:
     saver = tf.train.Saver(tf.global_variables())
     tf.global_variables_initializer().run()
     train_writer = tf.summary.FileWriter(iv.tensorboard_dir+'/'+'mann', sess.graph)
-    print(iv)
     print("1st\t2nd\t3rd\t4th\t5th\t6th\t7th\t8th\t9th\t10th\tbatch\tloss")
+
 
     for b in range(iv.num_epoches):
 
         # Result Test
         if b % 100 == 0:
-            x_inst, x_label, y = data_loader.fetch_batch(iv.n_classes, iv.batch_size, iv.seq_length,
-                                                          type='test')
+            x_inst, x_label, y = data_loader.fetch_batch(iv.n_classes, iv.batch_size, iv.seq_length, type='test')
             feed_dict = {mann.x_inst: x_inst, mann.x_label: x_label, mann.y: y}
             output, learning_loss = sess.run([mann.o, mann.learning_loss], feed_dict=feed_dict)
             merged_summary = sess.run(mann.learning_loss_summary, feed_dict=feed_dict)
             train_writer.add_summary(merged_summary, b)
             accuracy = test_f(iv, y, output)
+            curve = test_f2(iv, y, output)
+
             for accu in accuracy:
                 print('%.4f' % accu, end='\t')
             print('%d\t%.4f' % (b, learning_loss))
@@ -84,3 +116,4 @@ with tf.Session() as sess:
         feed_dict = {mann.x_inst: x_inst, mann.x_label: x_label, mann.y: y}
         sess.run(mann.train_op, feed_dict=feed_dict)
         # print('Step', b)
+
